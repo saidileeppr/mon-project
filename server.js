@@ -38,6 +38,6 @@ io.on('connection',function(socket){
     socket.to(roomId).emit('voice', blob);
 });
 });
-server.listen(PORT,function(){
+server.listen(80,function(){
   console.log(`Server is up on port ${PORT}`)
 });

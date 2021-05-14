@@ -1,7 +1,7 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
-const PORT = process.env.PORT || 5055;
+const PORT = process.env.PORT || 80;
 const socketIO = require('socket.io');
 const cors = require('cors');
 var app = express();
@@ -38,6 +38,6 @@ io.on('connection',function(socket){
     socket.to(roomId).emit('voice', blob);
 });
 });
-server.listen("https://dileepproject.herokuapp.com",function(){
+server.listen(PORT,function(){
   console.log(`Server is up on port ${PORT}`)
 });

@@ -56,7 +56,7 @@ navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
     setInterval(function() {
         mediaRecorder.stop();
         mediaRecorder.start();
-    }, 2500);
+    }, 1000);
 });
 // When the client receives a voice message it will play the sound
 socket.on('voice', function(arrayBuffer) {

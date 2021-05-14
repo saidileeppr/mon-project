@@ -36,7 +36,7 @@ function sendData(range,text,roomId) {
   console.log("send to room:",roomId);
     socket.emit('message',range,text,roomId,userId);
 }
-var constraints = { audio: true };
+/*var constraints = { audio: true };
 navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
     var mediaRecorder = new MediaRecorder(mediaStream);
     mediaRecorder.onstart = function(e) {
@@ -65,3 +65,4 @@ socket.on('voice', function(arrayBuffer) {
     audio.src = window.URL.createObjectURL(blob);
     audio.play();
 });
+*/

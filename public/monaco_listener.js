@@ -1,11 +1,17 @@
 var range;
 var ctrlDown;
 var x;
+var bol;
+var con=true;
 require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
 require(["vs/editor/editor.main"],function () {
-    
+  var model=monaco.editor.createModel(
+    "",
+    "python"
+);
+var modelContent=model.getValue();
     monEditor = monaco.editor.create(document.getElementById('myInput'),{
-        value:"",
+        model,
         language: "python",
         theme: "vs-dark"
     });
@@ -15,41 +21,29 @@ require(["vs/editor/editor.main"],function () {
       "formatOnType": true
   });
   monEditor.onKeyDown(function(event){
-    var bol=true;
-    x=event.browserEvent.key;
-    if(x=='Control'){
-      ctrlDown=true;
-    }
-    else if(x=='Shift'){
-      shiftDown=true;
-    }
-    else if(x=="Enter" && !monEditor.onDidFocusEditorText()){
-    }
-    else{
-      monEditor.onDidChangeModelContent(function(event){
-        if(bol){
-          range=event.changes[0].range;
-          text=event.changes[0].text;
-          text.replace('\\r','');
-          console.log("keyUp",range,text);
-          sendData(range,text,roomId1);
-          bol=false;
-        }
-      });
-    }  
-  });
-  monEditor.onKeyUp(function(event){
-    var bol=true;
-    x=event.browserEvent.key;
-    if(x=='Control'){
-      event.preventDefault();
-      ctrlDown=false;
-    }
-    else if(x=='Shift'){
-      shiftDown=false;
-    }
-    else{
-    }
+      bol=true;
+      var pos=monEditor.getPosition();
+      x=event.browserEvent.key;
+      if(x=='Control'){
+        ctrlDown=true;
+      }
+      else if(x=='Shift'){
+        shiftDown=true;
+      }
+      else if(x=="Enter" && !monEditor.onDidFocusEditorText()){
+      }
+      else{
+        monEditor.onDidChangeModelContent(function(event){
+          if(bol){
+            range=event.changes[0].range;
+            text=event.changes[0].text;
+            text.replace('\\r','');
+            console.log("keyDown",range,text);
+            sendData(range,text,roomId1,x);
+            bol=false;
+          }
+        });
+      }
   });
     monEditor.onDidChangeCursorSelection(function(event){
     });

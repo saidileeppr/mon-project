@@ -38,6 +38,6 @@ io.on('connection',function(socket){
     socket.to(roomId).emit('voice', blob);
 });
 });
-server.listen("http://code-collab-1.herokuapp.com",function(){
+server.listen("https://dileepproject.herokuapp.com",function(){
   console.log(`Server is up on port ${PORT}`)
 });

@@ -5,6 +5,22 @@ var rec='';
 var arr='';
 var arriter=0;
 var userId='';
+require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
+require(["vs/editor/editor.main"],function () {
+  model=monaco.editor.createModel(
+  "",
+  "python"
+);
+  monEditor = monaco.editor.create(document.getElementById('myInput'),{
+      model,
+      theme: "vs-dark"
+  });
+  monEditor.updateOptions({
+    "autoIndent": true,
+    "formatOnPaste": true,
+    "formatOnType": true
+});
+});
   socket.on('connect',function(){
     console.log('connected to server');
      roomId1=window.location.href;
@@ -24,19 +40,25 @@ var userId='';
     console.log('disconnected from server');
     socket.emit('discUser',roomId1,userId);
   });
-  socket.on('newMessage',function (range,text,roomId) {
-    realTime(range,text,roomId);
+  socket.on('newMessage',function (op,changes,roomId) {
+    realTime(op,changes,roomId);
   });
   socket.on('prevData',function(roomId){
     roomId1 =roomId;
     console.log('newUser from room:'+roomId);
-    sendData([0,0,0,0],"",roomId1);
+    require(["vs/editor/editor.main"],function () {
+    sendData(2,[{range:new monaco.Range(1,1,1,1),text:model.getValue(),forceMoveMarkers:true}],roomId);
+    });
   });
-function sendData(range,text,roomId) {
+function sendData(op,changes,roomId) {
   console.log("send to room:",roomId);
-    socket.emit('message',range,text,roomId,userId);
+    socket.emit('message',op,changes,roomId,userId);
 }
-var constraints = { audio: true };
+var constraints = {audio: {
+  echoCancellation: true,
+  noiseSuppression: true,
+
+}}
 navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
     var mediaRecorder = new MediaRecorder(mediaStream);
     mediaRecorder.onstart = function(e) {

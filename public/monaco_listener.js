@@ -3,43 +3,29 @@ var ctrlDown;
 var x;
 var bol;
 var con=true;
-require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
 require(["vs/editor/editor.main"],function () {
-  var model=monaco.editor.createModel(
-    "",
-    "python"
-);
-var modelContent=model.getValue();
-    monEditor = monaco.editor.create(document.getElementById('myInput'),{
-        model,
-        language: "python",
-        theme: "vs-dark"
-    });
-    monEditor.updateOptions({
-      "autoIndent": true,
-      "formatOnPaste": true,
-      "formatOnType": true
+  monEditor.onKeyUp(function(event){
   });
   monEditor.onKeyDown(function(event){
       bol=true;
       var pos=monEditor.getPosition();
       x=event.browserEvent.key;
-      if(x=='Control'){
-        ctrlDown=true;
+      if(x=="Enter" && !monEditor.onDidFocusEditorText()){
       }
-      else if(x=='Shift'){
-        shiftDown=true;
-      }
-      else if(x=="Enter" && !monEditor.onDidFocusEditorText()){
-      }
+      
+      // else if(event.ctrlKey && (x!="v" && x!='V')){
+      //   var sel=monEditor.getSelection();
+      //   sendData(1,sel,x,roomId1);
+      // }
       else{
         monEditor.onDidChangeModelContent(function(event){
+          var changes=[];
+          for(var i=0;i<event.changes.length;i++){
+            changes.push({range:event.changes[i].range,text:event.changes[i].text,forceMoveMarkers:true});
+          }
           if(bol){
-            range=event.changes[0].range;
-            text=event.changes[0].text;
-            text.replace('\\r','');
-            console.log("keyDown",range,text);
-            sendData(range,text,roomId1,x);
+            console.log(changes);
+            sendData(2,changes,roomId1);
             bol=false;
           }
         });

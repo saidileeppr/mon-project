@@ -1,6 +1,5 @@
-function realTime(range,text,roomId1=''){
-    console.log(range,text);
+function realTime(op,changes,roomId1=''){
     require(["vs/editor/editor.main"],function () {
-        monEditor.executeEdits('my-source',[{identifier:"asd",range:range,text:text,forceMoveMarkers:true}]);
+            monEditor.executeEdits('my-source',changes);
     });
 }

@@ -26,10 +26,10 @@ io.on('connection',function(socket){
     socket.join(roomId);
     socket.to(roomId).emit('prevData',roomId);
   });
-  socket.on('message',function(range,text,roomId,userId){
+  socket.on('message',function(op,changes,roomId,userId){
     console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+hosts[roomId]);
     //if(hosts[roomId]==userId || opt=='P')
-      socket.to(roomId).emit('newMessage',range,text,roomId);
+      socket.to(roomId).emit('newMessage',op,changes,roomId);
   });
   socket.on('disconnect',function(){
     console.log('user just disconnected');

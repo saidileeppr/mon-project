@@ -4,22 +4,23 @@ var x;
 var bol;
 var con=true;
 require(["vs/editor/editor.main"],function () {
-  var edit;
-  monEditor.onMouseUp(function(e){
-    ran=monEditor.getSelection();
-    sendData(1,ran,roomId1);
+  // var edit;
+   monEditor.onMouseUp(function(e){
   });
   monEditor.onMouseDown(function(e){
-    bol=true;
-        monEditor.onDidChangeModelContent(function(event){
+bol=true;        
+    monEditor.onDidChangeModelContent(function(event){
           if(bol){
             edit=event.changes;
-            var changes=[];
+            var ranges=[];
+            var texts=[];
             for(var i=0;i<event.changes.length;i++){
-              changes.push({range:event.changes[i].range,text:event.changes[i].text,forceMoveMarkers:true});
+              ranges.push([event.changes[i].range.startLineNumber,event.changes[i].range.startColumn,event.changes[i].range.endLineNumber,event.changes[i].range.endColumn]);
+              texts.push(event.changes[i].text);
             }
-              console.log(event.changes);
-              sendData(2,changes,roomId1);
+              console.log(ranges,texts,event.changes);
+              sendData(2,ranges,texts,roomId1);
+              recordAction(2,ranges,texts);
               bol=false;
             }
         });
@@ -32,18 +33,19 @@ require(["vs/editor/editor.main"],function () {
       else{
         monEditor.onDidChangeModelContent(function(event){
           if(bol && edit!=event.changes){
-          var changes=[];
+          var ranges=[];
+          var texts=[];
             for(var i=0;i<event.changes.length;i++){
-              changes.push({range:event.changes[i].range,text:event.changes[i].text,forceMoveMarkers:true});
+              ranges.push([event.changes[i].range.startLineNumber,event.changes[i].range.startColumn,event.changes[i].range.endLineNumber,event.changes[i].range.endColumn]);
+              texts.push([event.changes[i].text]);
             }
-              console.log(event.changes);
-              sendData(2,changes,roomId1);
+              console.log(changes,event.changes);
+              sendData(2,ranges,texts,roomId1);
+              recordAction(2,ranges,texts);
               bol=false;
               edit={};
             }
         });
-        ran=monEditor.getSelection();
-        sendData(1,ran,roomId1);
       }
   });    
   });

@@ -1,10 +1,20 @@
-function realTime(op,changes,roomId1=''){
+function realTime(op,ranges,texts,roomId1=''){
     require(["vs/editor/editor.main"],function () {
-        if(op==2){
+        if(op==2 || op==3){
+            if(op==3){
+                model.setValue("");
+            }
+            var changes=[];
+            for(i=0;i<ranges.length;i++){
+                var ran=new monaco.Range(ranges[i][0],ranges[i][1],ranges[i][2],ranges[i][3]);
+                changes.push({identifier: "my-source",range:ran,text:texts[i],forceMoveMarkers:false});
+            }
+            console.log(changes);
             monEditor.executeEdits('my-source',changes);
         }
         else if(op==1){
-            monEditor.setSelection(changes);
+            //ran=new monaco.Range(ranges[0][0],ranges[0][1],ranges[0][2],ranges[0][3]);
+            //monEditor.setSelection(ran);
         }
     });
 }

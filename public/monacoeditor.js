@@ -35,26 +35,23 @@ require(["vs/editor/editor.main"],function () {
       userId=localStorage.getItem('userId');
     }
     socket.emit('newUser',roomId1,userId);
-    require(["vs/editor/editor.main"],function(){
-      model.setValue("");
-      console.log("clear");
-    });
   });
   socket.on('disconnect',function (){
     console.log('disconnected from server');
     socket.emit('discUser',roomId1,userId);
   });
-  socket.on('newMessage',function (op,changes,roomId) {
-    realTime(op,changes,roomId);
+  socket.on('newMessage',function (op,ranges,texts,roomId) {
+    realTime(op,ranges,texts,roomId);
   });
   socket.on('prevData',function(roomId){
     roomId1 =roomId;
     console.log('newUser from room:'+roomId);
     require(["vs/editor/editor.main"],function () {
-    sendData(2,[{range:new monaco.Range(1,1,1,1),text:model.getValue(),forceMoveMarkers:true}],roomId);
+      var con=model.getValue();
+      sendData(3,[[1,1,1,1]],[con],roomId);
+      });
     });
-  });
-function sendData(op,changes,roomId) {
+function sendData(op,ranges,texts,roomId) {
   console.log("send to room:",roomId);
-    socket.emit('message',op,changes,roomId,userId);
+    socket.emit('message',op,ranges,texts,roomId,userId);
 }

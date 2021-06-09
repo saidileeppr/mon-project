@@ -1,4 +1,4 @@
-require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
+require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
 require(["vs/editor/editor.main"],function () {
   model=monaco.editor.createModel(
   "",
@@ -33,14 +33,14 @@ document.getElementById('import').onclick = function() {
     var result = JSON.parse(e.target.result);
     arr=(result.Activity);
     console.log(arr[4]);
-var inp4=document.getElementById('audRec');
-inp4.controls = true;
-var arrlen=arr.length;
-var lastsec=0;
-var tim=0;
-var i=0;
-inp4.onplaying=function(){};
-inp4.onpause=function(){};
+    var inp4=document.getElementById('audRec');
+    inp4.controls = true;
+    var arrlen=arr.length;
+    var lastsec=0;
+    var tim=0;
+    var i=0;
+    inp4.onplaying=function(){};
+    inp4.onpause=function(){};
 inp4.ontimeupdate = function(){
     if(inp4.paused){
       var currTime=Math.floor(inp4.currentTime);

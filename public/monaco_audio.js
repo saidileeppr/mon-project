@@ -10,9 +10,12 @@ var constraints = {audio: {
           this.chunks.push(e.data);
       };
       mediaRecorder.onstop = function(e) {
-          var blob = new Blob(this.chunks, { 'type' : 'audio/ogg; codecs=opus' });
+          var aud = new Blob(this.chunks, { 'type' : 'audio/ogg; codecs=opus' });
           console.log(roomId1,"audio");
-          socket.emit('radio', blob,roomId1);
+          socket.emit('radio', aud,roomId1);
+          if(rec==1){
+              audFile+=aud;
+          }
       };
       // Start recording
       mediaRecorder.start();
@@ -20,7 +23,7 @@ var constraints = {audio: {
       setInterval(function() {
           mediaRecorder.stop();
           mediaRecorder.start();
-      }, 1000);
+      }, 1500);
   });
   // When the client receives a voice message it will play the sound
   socket.on('voice', function(arrayBuffer) {

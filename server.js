@@ -8,9 +8,8 @@ var app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
 var rooms={};
-var hosts={};
-var socs={};
 var users={};
+var names={};
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
 app.get('/',function(req,rep){
@@ -21,58 +20,71 @@ app.get('/:editor_room',function(req,rep){
 })
 io.on('connection',function(socket){
   console.log('user just connected');
-  socket.on('newUser',function(roomId,userId){
+  socket.on('newUser',function(roomId,userId,userName){
     userId1=userId;
-    
     socket.join(roomId);
-    socket.to(roomId).emit('prevData',roomId);
       if(rooms[roomId]){
-        rooms[roomId].push(userId);
+        socket.to(roomId).emit('prevData',socket.id,roomId);
+        socket.to(roomId).emit('addUser',userName,userId);
+        io.to(socket.id).emit("addUsers",rooms[roomId].names,rooms[roomId].ids);
+        rooms[roomId].ids.push(userId);
+        rooms[roomId].names.push(userName);
       }
       else{
-        rooms[roomId] =[userId];
-        hosts[roomId] =userId;
+        rooms[roomId]={};
+        rooms[roomId].ids =[userId];
+        rooms[roomId].host =userId;
+        rooms[roomId].names=[userName];
       }
-      socs[socket.id]=userId;
-      users[socket.id]=roomId;
+      users[socket.id]={};
+      users[socket.id].userId=userId;
+      users[socket.id].room=roomId;
+      users[socket.id].userName=userName;
+      if(userId==rooms[roomId].host){
+        io.to(socket.id).emit('writePerm');      
+      }
       console.log(rooms);
   });
   socket.on('message',function(op,ranges,texts,roomId,userId){
-    if(hosts[roomId]==userId || op==3){
+    if(rooms[roomId].host==userId){
       socket.to(roomId).emit('newMessage',op,ranges,texts,roomId);
-      console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+hosts[roomId]);
+      console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].host);
+    }
+  });
+  socket.on('pastMessage',function(op,ranges,texts,roomId,userId,socid){
+    if(rooms[roomId].host==userId || op==3){
+      io.to(socid).emit('newMessage',op,ranges,texts,roomId);
+      console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].host);
     }
   });
   socket.on('disconnect',function(){
-    rem(users[socket.id],socket.id);
+    socket.to(users[socket.id].room).emit("delUser",users[socket.id].userName,users[socket.id].userId);
+    rem(users[socket.id].room,socket.id);
     console.log(rooms);
     console.log('user just disconnected');
   });
   socket.on('radio', function(blob,roomId) {
-    socket.to(roomId).emit('voice', blob);
+    //socket.to(roomId).emit('voice', blob);
 });
 });
 server.listen(PORT,function(){
   console.log(`Server is up on port ${PORT}`)
 });
 function rem(roomId1,sock1){
-  userId1=socs[sock1];
+  var userId1=users[sock1].userId;
+  var userName1=users[sock1].userName;
   if(rooms[roomId1]){
-    if(rooms[roomId1].length==1){
-      delete hosts[roomId1];
+    if(rooms[roomId1].ids.length==1){
       delete users[sock1];
-      delete socs[sock1];
       delete rooms[roomId1];
     }
     else{
       var ind;
-      for(i=0;i<rooms[roomId1].length;i++){
-        if(rooms[roomId1][i]==userId1){
-          ind=i;
-          break;
-        }
-      }
-      rooms[roomId1].splice(ind,1);
+      ind =rooms[roomId1].ids.indexOf(userId1);
+      rooms[roomId1].ids.splice(ind,1);
+      ind=rooms[roomId1].names.indexOf(userName1);
+      rooms[roomId1].names.splice(ind,1);
+      delete users[sock1];
     }     
   }
 }

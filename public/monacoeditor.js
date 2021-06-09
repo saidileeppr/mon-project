@@ -42,7 +42,7 @@ require(["vs/editor/editor.main"],function () {
       userName=localStorage.getItem('userName');
     }
     if(localStorage.getItem('userId')===null){
-      localStorage.setItem('userId',generateId());
+      localStorage.setItem('userId',generateId(9));
       userId = localStorage.getItem('userId');
     }
     else{
@@ -55,7 +55,7 @@ require(["vs/editor/editor.main"],function () {
     roomIds=userIds;
     console.log("Room Members",roomNames);
     for (i=0;i<roomNames.length;i++){
-      memList.innerHTML+="<div id=\""+roomIds[i]+"\">"+roomNames[i]+"</div>"
+      memList.innerHTML+="<div id=\""+roomIds[i]+"\">"+roomNames[i]+"</div>";
     }
   });
   socket.on("addUser",function(userName,userId){
@@ -105,11 +105,10 @@ function sendData(op,ranges,texts,roomId) {
   console.log("send to room:",roomId);
     socket.emit('message',op,ranges,texts,roomId,userId);
 }
-function generateId(){
+function generateId(len){
   var ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-+=;:[]{}!@#$^*()`~';
-  var ID_LENGTH =12;
   var rtn = '';
-  for(var i=0;i<ID_LENGTH;i++){
+  for(var i=0;i<len;i++){
       rtn += ALPHABET.charAt(Math.floor(Math.random()*ALPHABET.length));
     }
   return rtn;

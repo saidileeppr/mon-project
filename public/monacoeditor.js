@@ -31,7 +31,7 @@ require(["vs/editor/editor.main"],function () {
 });
   socket.on('connect',function(){
     console.log('connected to server');
-     roomId1=window.location.href;
+    roomId1=window.location.href;
     roomId1=roomId1.replace(/http:\/\/.*\//i,'');
     roomId1=roomId1.replace(/https:\/\/.*\//i,'');
     if(localStorage.getItem('userName')===null){
@@ -48,7 +48,9 @@ require(["vs/editor/editor.main"],function () {
     else{
       userId=localStorage.getItem('userId');
     }
-    socket.emit('newUser',roomId1,userId,userName);
+    if(roomId1){
+      socket.emit('newUser',roomId1,userId,userName);
+    }
   });
   socket.on("addUsers",function(userNames,userIds){
     roomNames=userNames;

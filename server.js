@@ -58,8 +58,10 @@ io.on('connection',function(socket){
     }
   });
   socket.on('disconnect',function(){
-    socket.to(users[socket.id].room).emit("delUser",users[socket.id].userName,users[socket.id].userId);
-    rem(users[socket.id].room,socket.id);
+    if(users[socket.id]){
+      socket.to(users[socket.id].room).emit("delUser",users[socket.id].userName,users[socket.id].userId);
+      rem(users[socket.id].room,socket.id);
+    }
     console.log(rooms);
     console.log('user just disconnected');
   });

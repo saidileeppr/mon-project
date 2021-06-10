@@ -50,31 +50,47 @@ require(["vs/editor/editor.main"],function () {
     }
     if(roomId1){
       socket.emit('newUser',roomId1,userId,userName);
+      memList.innerHTML+="<div id=\""+userId+"\">"+userName+"</div>";
+      memList.innerHTML+="<div>Members</div>";
     }
   });
-  socket.on("addUsers",function(userNames,userIds){
+  socket.on("addUsers",function(userNames,userIds,hostId){
     roomNames=userNames;
     roomIds=userIds;
     console.log("Room Members",roomNames);
     for (i=0;i<roomNames.length;i++){
-      memList.innerHTML+="<div id=\""+roomIds[i]+"\">"+roomNames[i]+"</div>";
+      if(roomIds[i]==hostId){
+        memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+roomIds[i]+"\">"+roomNames[i]+" (Host)</div>");
+      }
+      else{
+        memList.innerHTML+="<div id=\""+roomIds[i]+"\">"+roomNames[i]+"</div>";
+      }
     }
   });
-  socket.on("addUser",function(userName,userId){
+  socket.on("addUser",function(userName,userId,hostId){
     roomIds.push(userId);
     roomNames.push(userName);
     console.log("Room Members",roomNames);
-    memList.innerHTML+="<div id=\""+userId+"\">"+userName+"</div>";
+    if(userId==hostId){
+      memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+userId+"\">"+userName+" (Host)</div>");
+    }
+    else{
+      memList.innerHTML+="<div id=\""+userId+"\">"+userName+"</div>";
+    }
   });
-  socket.on("delUser",function(userName1,userId1){
+  socket.on("delUser",function(userName1,userId1,hostId){
     var ind;
     ind=roomNames.indexOf(userName1);
     roomNames.splice(ind,1);
     ind=roomIds.indexOf(userId1);
     roomIds.splice(ind,1);
     console.log("Room Members",roomNames);
-    console.log("<div id=\""+userId1+"\">"+userName1+"</div>",memList.innerHTML);
-    memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId1+"\">"+userName1+"</div>","");
+    if(userId1==hostId){
+      memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId1+"\">"+userName1+" (Host)</div>","");
+    }
+    else{
+      memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId1+"\">"+userName1+"</div>","");
+    }
   });
   socket.on('writePerm',function(){
     console.log('Host');

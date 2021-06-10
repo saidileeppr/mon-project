@@ -25,8 +25,8 @@ io.on('connection',function(socket){
     socket.join(roomId);
       if(rooms[roomId]){
         socket.to(roomId).emit('prevData',socket.id,roomId);
-        socket.to(roomId).emit('addUser',userName,userId);
-        io.to(socket.id).emit("addUsers",rooms[roomId].names,rooms[roomId].ids);
+        socket.to(roomId).emit('addUser',userName,userId,rooms[roomId].host);
+        io.to(socket.id).emit("addUsers",rooms[roomId].names,rooms[roomId].ids,rooms[roomId].host);
         rooms[roomId].ids.push(userId);
         rooms[roomId].names.push(userName);
       }
@@ -59,7 +59,7 @@ io.on('connection',function(socket){
   });
   socket.on('disconnect',function(){
     if(users[socket.id]){
-      socket.to(users[socket.id].room).emit("delUser",users[socket.id].userName,users[socket.id].userId);
+      socket.to(users[socket.id].room).emit("delUser",users[socket.id].userName,users[socket.id].userId,rooms[users[socket.id].room].host);
       rem(users[socket.id].room,socket.id);
     }
     console.log(rooms);

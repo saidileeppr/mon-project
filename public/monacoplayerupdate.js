@@ -1,4 +1,3 @@
-var host=0;
 function realTime(op,ranges,texts,roomId1=''){
     require(["vs/editor/editor.main"],function () {
         monEditor.updateOptions({
@@ -20,10 +19,8 @@ function realTime(op,ranges,texts,roomId1=''){
             //ran=new monaco.Range(ranges[0][0],ranges[0][1],ranges[0][2],ranges[0][3]);
             //monEditor.setSelection(ran);
         }
-        if(host!=1){
             monEditor.updateOptions({
                 "readOnly": true
             });
-        }
     });
 }

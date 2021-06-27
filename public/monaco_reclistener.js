@@ -4,7 +4,6 @@ var x;
 var bol;
 var con=true;
 require(["vs/editor/editor.main"],function () {
-  // var edit;
    monEditor.onMouseUp(function(e){
   });
   monEditor.onMouseDown(function(e){
@@ -19,7 +18,6 @@ bol=true;
               texts.push(event.changes[i].text);
             }
               console.log(ranges,texts,event.changes);
-              sendData(2,ranges,texts,loc_roomId1);
               recordAction(2,ranges,texts);
               bol=false;
             }
@@ -40,7 +38,6 @@ bol=true;
               texts.push([event.changes[i].text]);
             }
               console.log(changes,event.changes);
-              sendData(2,ranges,texts,loc_roomId1);
               recordAction(2,ranges,texts);
               bol=false;
               edit={};

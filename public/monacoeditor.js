@@ -1,14 +1,12 @@
 let socket = io();
-var roomId1='';
-var userName='';
+var loc_roomId1='';
+var loc_userName='';
 var rec='';
 var arr='';
 var arriter=0;
-var userId='';
+var loc_userId='';
 var host=0;
-var userName;
-var roomNames=[];
-var roomIds=[];
+var roomdet={userId:[]};
 var langg=document.getElementById("langg");
 var audFile;
 var memList=document.getElementById("members");
@@ -31,65 +29,83 @@ require(["vs/editor/editor.main"],function () {
 });
   socket.on('connect',function(){
     console.log('connected to server');
-    roomId1=window.location.href;
-    roomId1=roomId1.replace(/http:\/\/.*\//i,'');
-    roomId1=roomId1.replace(/https:\/\/.*\//i,'');
+    loc_roomId1=window.location.href;
+    loc_roomId1=loc_roomId1.replace(/http:\/\/.*\//i,'');
+    loc_roomId1=loc_roomId1.replace(/https:\/\/.*\//i,'');
     if(localStorage.getItem('userName')===null){
-      userName=prompt("Your  name?");
-      localStorage.setItem('userName',userName);
+      loc_userName=prompt("Your  name?");
+      localStorage.setItem('userName',loc_userName);
     }
     else{
-      userName=localStorage.getItem('userName');
+      loc_userName=localStorage.getItem('userName');
     }
     if(localStorage.getItem('userId')===null){
       localStorage.setItem('userId',generateId(9));
-      userId = localStorage.getItem('userId');
+      loc_userId = localStorage.getItem('userId');
     }
     else{
-      userId=localStorage.getItem('userId');
+      loc_userId=localStorage.getItem('userId');
     }
-    if(roomId1){
-      socket.emit('newUser',roomId1,userId,userName);
-      memList.innerHTML+="<div id=\""+userId+"\">"+userName+"</div>";
+    if(loc_roomId1!=""){
+      socket.emit('newUser',loc_roomId1,loc_userId,loc_userName);
+      memList.innerHTML+="<div>"+loc_userName+"</div>";
+      memList.innerHTML+="<button id=\"changeName\" onclick=changeName()>Change Name</button>";
       memList.innerHTML+="<div>Members</div>";
     }
   });
   socket.on("addUsers",function(userNames,userIds,hostId){
-    roomNames=userNames;
-    roomIds=userIds;
-    console.log("Room Members",roomNames);
-    for (i=0;i<roomNames.length;i++){
-      if(roomIds[i]==hostId){
-        memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+roomIds[i]+"\">"+roomNames[i]+" (Host)</div>");
+
+    if(hostId==loc_userId){
+      memList.innerHTML=memList.innerHTML.replace("<div>"+loc_userName+"</div>","<div>"+loc_userName+" (Host)</div>");
+      host=1;
+      for (i=0;i<userNames.length;i++){
+        roomdet[host]=hostId;
+        if(userIds[i]==hostId && userIds[i]!=loc_userId){
+          memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div>"+userNames[i]+" (Host)<button id=\""+userIds[i]+"\" class=\"Mute_But\" onclick=\"muteFun(this.id)\">Mute</button><button id=\""+userIds[i]+"\" class=\"Write_But\" onclick=\"writeFun(this.id)\">Write</button><button id=\""+userIds[i]+"\" class=\"Exit_But\" onclick=\"exitFun(this.id)\">Exit</button></div>");
+        }
+        else{
+          memList.innerHTML+="<div>"+userNames[i]+"<button id=\""+userIds[i]+"\" class=\"Mute_But\" onclick=\"muteFun(this.id)\">Mute</button><button id=\""+userIds[i]+"\" class=\"Write_But\" onclick=\"writeFun(this.id)\">Write</button><button id=\""+userIds[i]+"\" class=\"Exit_But\" onclick=\"exitFun(this.id)\">Exit</button></div>";
+        }
       }
-      else{
-        memList.innerHTML+="<div id=\""+roomIds[i]+"\">"+roomNames[i]+"</div>";
+    }
+    else{
+      for (i=0;i<userNames.length;i++){
+        roomdet[host]=hostId;
+        if(userIds[i]==hostId && userIds[i]!=loc_userId){
+          memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div>"+userNames[i]+" (Host)</div>");
+        }
+        else{ 
+          memList.innerHTML+="<div>"+userNames[i]+"</div>";
+        }
       }
     }
   });
   socket.on("addUser",function(userName,userId,hostId){
-    roomIds.push(userId);
-    roomNames.push(userName);
-    console.log("Room Members",roomNames);
-    if(userId==hostId){
-      memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+userId+"\">"+userName+" (Host)</div>");
+    roomdet[host]=hostId;
+    if(loc_userId==hostId){
+      host=1;
+      memList.innerHTML+="<div>"+userName+"<button id=\""+userId+"\" class=\"Mute_But\" onclick=\"muteFun(this.id)\">Mute</button><button id=\""+userId+"\" class=\"Write_But\" onclick=\"writeFun(this.id)\">Write</button><button id=\""+userId+"\" class=\"Exit_But\" onclick=\"exitFun(this.id)\">Exit</button></div>";
     }
     else{
-      memList.innerHTML+="<div id=\""+userId+"\">"+userName+"</div>";
+      if(userId==hostId && userId!=loc_userId){
+        memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+userId+"\">"+userName+" (Host)</div>");
+      }
+      else{
+        memList.innerHTML+="<div>"+userName+"</div>";
+      }
     }
   });
   socket.on("delUser",function(userName1,userId1,hostId){
-    var ind;
-    ind=roomNames.indexOf(userName1);
-    roomNames.splice(ind,1);
-    ind=roomIds.indexOf(userId1);
-    roomIds.splice(ind,1);
-    console.log("Room Members",roomNames);
-    if(userId1==hostId){
-      memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId1+"\">"+userName1+" (Host)</div>","");
+    if(hostId==loc_userId){
+        memList.innerHTML=memList.innerHTML.replace("<div>"+userName1+"<button id=\""+userId1+"\" class=\"Mute_But\" onclick=\"muteFun(this.id)\">Mute</button><button id=\""+userId1+"\" class=\"Write_But\" onclick=\"writeFun(this.id)\">Write</button><button id=\""+userId1+"\" class=\"Exit_But\" onclick=\"exitFun(this.id)\">Exit</button></div>","");
     }
     else{
-      memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId1+"\">"+userName1+"</div>","");
+      if(userId1==hostId){
+        memList.innerHTML=memList.innerHTML.replace("<div>"+userName1+" (Host)</div>","");
+      }
+      else{
+        memList.innerHTML=memList.innerHTML.replace("<div>"+userName1+"</div>","");
+      }
     }
   });
   socket.on('writePerm',function(){
@@ -108,20 +124,24 @@ require(["vs/editor/editor.main"],function () {
     realTime(op,ranges,texts,roomId);
   });
   socket.on('prevData',function(socid,roomId){
-    roomId1 =roomId;
+    loc_roomId1 =roomId;
     console.log('newUser from room:'+roomId);
     require(["vs/editor/editor.main"],function () {
       var con=model.getValue();
       sendNewData(3,[[1,1,1,1]],[con],roomId,socid);
       });
     });
+    socket.on('repName',function(old_name,new_name){
+      memList.innerHTML=memList.innerHTML.replace("<div>"+old_name,"<div>"+new_name);
+      memList.innerHTML=memList.innerHTML.replace("<div>"+old_name+" (Host)","<div>"+new_name+" (Host)");
+    });
 function sendNewData(op,ranges,texts,roomId,socid) {
   console.log("send to room:",roomId);
-  socket.emit('pastMessage',op,ranges,texts,roomId,userId,socid);
+  socket.emit('pastMessage',op,ranges,texts,roomId,loc_userId,socid);
 }
 function sendData(op,ranges,texts,roomId) {
   console.log("send to room:",roomId);
-    socket.emit('message',op,ranges,texts,roomId,userId);
+    socket.emit('message',op,ranges,texts,roomId,loc_userId);
 }
 function generateId(len){
   var ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-+=;:[]{}!@#$^*()`~';
@@ -137,3 +157,14 @@ langg.onchange=function(){
     console.log(langg.value);
   });
 };
+function changeName(){
+  pre_name=loc_userName;
+  loc_userName=prompt("Your  name?");
+  localStorage.setItem('userName',loc_userName);
+  socket.emit('reqRepName',pre_name,loc_userName,loc_roomId1);
+  memList.innerHTML=memList.innerHTML.replace("<div>"+pre_name,"<div>"+loc_userName);
+  memList.innerHTML=memList.innerHTML.replace("<div>"+pre_name+" (Host)","<div>"+loc_userName+" (Host)");
+}
+function muteFun(id){
+  alert(id);
+}

@@ -9,7 +9,6 @@ let server = http.createServer(app);
 let io = socketIO(server);
 var rooms={};
 var users={};
-var names={};
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
 app.get('/',function(req,rep){
@@ -22,6 +21,7 @@ io.on('connection',function(socket){
   console.log('user just connected');
   socket.on('newUser',function(roomId,userId,userName){
     userId1=userId;
+    users[socket.id]={};
     socket.join(roomId);
       if(rooms[roomId]){
         socket.to(roomId).emit('prevData',socket.id,roomId);
@@ -34,15 +34,13 @@ io.on('connection',function(socket){
         rooms[roomId]={};
         rooms[roomId].ids =[userId];
         rooms[roomId].host =userId;
+        rooms[roomId].write =userId;
         rooms[roomId].names=[userName];
+
       }
-      users[socket.id]={};
       users[socket.id].userId=userId;
       users[socket.id].room=roomId;
       users[socket.id].userName=userName;
-      if(userId==rooms[roomId].host){
-        io.to(socket.id).emit('writePerm');      
-      }
       console.log(rooms);
   });
   socket.on('message',function(op,ranges,texts,roomId,userId){
@@ -50,6 +48,9 @@ io.on('connection',function(socket){
       socket.to(roomId).emit('newMessage',op,ranges,texts,roomId);
       console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].host);
     }
+  });
+  socket.on('reqRepName',function(old_name,new_name,roomId){
+    socket.to(roomId).emit('repName',old_name,new_name);
   });
   socket.on('pastMessage',function(op,ranges,texts,roomId,userId,socid){
     if(rooms[roomId].host==userId || op==3){

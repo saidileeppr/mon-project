@@ -11,83 +11,82 @@ require(["vs/editor/editor.main"],function () {
   monEditor.updateOptions({
     "autoIndent": true,
     "formatOnPaste": true,
-    "formatOnType": true
+    "formatOnType": true,
+    "readOnly":true
 });
 });
-var arr=[];
+var lastsec=0;
+var tim=0;
+var i=0
 document.getElementById('import').onclick = function() {
-  var aud=document.getElementById('audRec');
   var filepoint = document.getElementById('selectFiles');
 	var files = filepoint.files;
-  var name=filepoint.value.split('\\');
-  var len=name.length;
-  var source=aud.src;
-  name=name[len-1].replace(".json","");
-  var s=source+name+".m4a";
-  aud.src=s;
   if (files.length <= 0) {
     return false;
   }
   var fr = new FileReader();
   fr.onload = function(e) { 
     var result = JSON.parse(e.target.result);
-    arr=(result.Activity);
-    console.log(arr[4]);
-    var inp4=document.getElementById('audRec');
-    inp4.controls = true;
-    var arrlen=arr.length;
-    var lastsec=0;
-    var tim=0;
-    var i=0;
-    inp4.onplaying=function(){};
-    inp4.onpause=function(){};
-inp4.ontimeupdate = function(){
-    if(inp4.paused){
-      var currTime=Math.floor(inp4.currentTime);
-      if(currTime!=lastsec && currTime<arrlen){
+    var binary = convertURIToBinary(result.Audio.replace("data:audio/ogg; codecs=opus;base64,",""));
+    var blob = new Blob([binary], {type: 'audio/ogg , codecs : opus'});
+    var aud=document.getElementById('audRec');
+    aud.src=window.URL.createObjectURL(blob);
+    activity=(result.Activity);
+    aud.controls = true;
+    load(1);
+    var arrlen=Object.keys(activity).length;
+    aud.onplaying=function(){};
+    aud.onpause=function(){};
+aud.ontimeupdate = function(){
+  console.log('run');
+  var currTime=Math.floor(aud.currentTime);
+      if(currTime!=lastsec && currTime<arrlen){  
+  if(aud.paused){
         load(currTime);
       }
-    }
     else{
-      var currTime=Math.floor(inp4.currentTime);
-      if(currTime!=lastsec && currTime<arrlen){
         console.log('play',currTime,lastsec);
         play(currTime);
       }
     }
-};
+  };
+}
 function load(tim){
-  require(["vs/editor/editor.main"],function () {
-    model.setValue("");
-  });
 var min=Math.floor(tim/60);
 console.log(tim,lastsec);
 i=min*60;
 console.log('pre',i);
 for (;i<tim;i++){
-  for (j=0;j<arr[i].length;j++){
-        realTime(arr[i][j][0],arr[i][j][1],arr[i][j][2]);
+  for (j=0;j<activity[i].length;j++){
+        realTime(activity[i][j][0],activity[i][j][1],activity[i][j][2]);
       }
-    
     }
-  console.log('pre',i,arr[i]);
+  console.log('pre',i,activity[i]);
   lastsec=i;
 }
 async function play(i){
   var j=0;
   lastsec=i;
-  if(arr[i].length!=0){
-    for (j=0;j<arr[i].length;j++){
+  if(activity[i].length!=0){
+    for (j=0;j<activity[i].length;j++){
       await sleep(150);
-      console.log(arr[i][j][0],arr[i][j][1],arr[i][j][2]);
-      realTime(arr[i][j][0],arr[i][j][1],arr[i][j][2]);
+      console.log(activity[i][j][0],activity[i][j][1],activity[i][j][2]);
+      realTime(activity[i][j][0],activity[i][j][1],activity[i][j][2]);
     }
   }
 }
 function sleep(ms) {
   return new Promise(
     resolve => setTimeout(resolve, ms));
-        }
-  } 
+        } 
   fr.readAsText(files.item(0));
 };
+function convertURIToBinary(dataURI) {
+  let raw = window.atob(dataURI);
+  let rawLength = raw.length;
+  let arr= new Uint8Array(new ArrayBuffer(rawLength));
+  for (let i = 0; i < rawLength; i++) {
+    arr[i] = raw.charCodeAt(i);
+  }
+  return arr;
+}

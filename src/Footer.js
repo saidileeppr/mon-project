@@ -1,6 +1,5 @@
 import React from 'react';
-import { IconContext } from "react-icons";
-import { FaTwitterSquare , FaFacebookSquare,FaInstagramSquare,FaLinkedin,FaGithubSquare } from 'react-icons/fa';
+import { FaTwitterSquare , FaFacebookSquare,FaInstagramSquare,FaGithubSquare } from 'react-icons/fa';
  export default function Footer(){
     return( 
      <footer>

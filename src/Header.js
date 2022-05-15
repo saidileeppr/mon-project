@@ -6,7 +6,7 @@ import { FaEnvelope, FaLinkedin} from 'react-icons/fa';
  export default function Header(){
     return( 
      <header>
-       <img src={image1} className="logo"/>
+       <img src={image1} className="logo" alt="logo"/>
          <div className="h-con">
             <h1 className="title-name">Subbu Subhash</h1>
             <h3 className="sub-title">Frontend Developer</h3>

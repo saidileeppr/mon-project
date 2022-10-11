@@ -6,6 +6,7 @@
 <body>
   <p>welcome to the chat app</p>
   <button onclick="Record()" value="Record" id="record">Record</button><br>
+  <button onclick="reqWriteAccess()" value="Request Write Access" id="reqWriteAccess">Request Write Access</button><br>
   <label for="cars">Choose language:</label>
   <select id="langg" name="langg">
     <option value="c">C</option>
@@ -13,10 +14,10 @@
     <option value="java">Java</option>
     <option value="python" selected>Python</option>
   </select>
-  <div style="height:1000px;width:1000px;color:blueviolet;" id="myInput" ></div>
-  <div id="members"><div>Me</div></div>
+  <div style="height:1000px;width:75%;color:blueviolet;" id="myInput" ></div>
+  <div style="position:absolute;top:5%;position:absolute;right:5%;" id="members"></div>
   <script src="/socket.io/socket.io.js"></script>
-  <script  src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <script src="/monaco-editor/min/vs/loader.js"></script>
   <script src="/monacoeditor.js"></script>
   <script src="/monaco_audio.js"></script>
   <script src="/monaco_listener.js"></script>

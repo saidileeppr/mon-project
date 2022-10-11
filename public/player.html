@@ -1,15 +1,44 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script  src="https://unpkg.com/monaco-editor/min/vs/loader.js"></script>
+        <script  src="/monaco-editor/min/vs/loader.js"></script>
         <title>Project</title>
     </head>
 <body>
+    <style type="text/css" src="./audio_player.css"></style>
 <label>Select your JSON file</label>
 <input type="file" id="selectFiles" value="Import" /><br>
 <button id="import">Import</button><br>
 <div style="height:500px;width:1000px;" id="myInput" ></div>
-<audio controls controlsList="nodownload" style="width:100%" id="audRec"></audio>
+<!--<audio controls controlsList="nodownload" autobuffer="autobuffer" preload="none" style="width:100%" id="audRec">
+    <source id="audioSource" src="" type="audio/ogg"></source>Your browser does not support the audio format.</audio>-->
+    <div class="player" style="height:100px">
+        <ul>
+              <div class="button-items">
+                 <audio id="audRec" preload="auto" loop="false">
+                    <source id="audioSource" src="" type="audio/ogg">
+                 </audio>
+                 <div class="controls">
+                    <svg id="play" viewBox="0 0 25 25" xml:space="preserve" style="height:100px">
+                        <defs><rect x="-49.5" y="-132.9" width="446.4" height="366.4"/></defs>
+                       <g>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.7,6.9V18c0,0,0.2,1.4,1.8,0l8.1-4.8c0,0,1.2-1.1-1-2L9.8,6.5 C9.8,6.5,9.1,6,8.7,6.9z"/>
+                       </g>
+                    </svg>
+                    <svg id="pause" viewBox="0 0 25 25" xml:space="preserve" style="height:100px">
+                       <g>
+                          <rect x="6" y="4.6" width="3.8" height="15.7"/>
+                          <rect x="14" y="4.6" width="3.9" height="15.7"/>
+                       </g>
+                    </svg>
+                 </div>
+              </div>
+           <div id="slider"><div id="elapsed"></div></div>
+                 <p id="timer">0:00</p>
+           </li>
+        </ul>
+     </div>
+<script src="./audio_player.js"></script>
 <script src="./monacoplayer.js"></script>
 <script src="./monacoplayerupdate.js"></script>
 </body>

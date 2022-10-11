@@ -1,93 +1,153 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
-const PORT = process.env.PORT ||80;
-const socketIO = require('socket.io');
+const routing=require('./routing');
+const PORT = process.env.PORT ||5123;
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 var app = express();
-let server = http.createServer(app);
+let server = http.createServer(app,{cookie: true});
+var logger= require('./public/logger');
+app.use(cors());
+app.use(cookieParser('Sai@2o00'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/node_modules'));
+app.use(routing);
+server.listen(PORT,function(){
+  logger.info(`Server is up on port ${PORT}`)
+});
+
+//Sockets Code
+const socketIO = require('socket.io');
 let io = socketIO(server);
 var rooms={};
+var socks={};
 var users={};
-app.use(cors());
-app.use(express.static(__dirname + '/public'));
-app.get('/',function(req,rep){
-  rep.sendFile(__dirname+"/public/index.html")
-})
-app.get('/:editor_room',function(req,rep){
-  rep.sendFile(__dirname+"/public/monaco_room.html")
-})
 io.on('connection',function(socket){
-  console.log('user just connected');
-  socket.on('newUser',function(roomId,userId,userName){
-    userId1=userId;
-    users[socket.id]={};
-    socket.join(roomId);
-      if(rooms[roomId]){
-        socket.to(roomId).emit('prevData',socket.id,roomId);
-        socket.to(roomId).emit('addUser',userName,userId,rooms[roomId].host);
-        io.to(socket.id).emit("addUsers",rooms[roomId].names,rooms[roomId].ids,rooms[roomId].host);
-        rooms[roomId].ids.push(userId);
-        rooms[roomId].names.push(userName);
+    logger.info('user just connected');
+    socket.on('newUser',function(roomId,userId,userName){
+      socks[socket.id]={};
+      socket.join(roomId);
+        if(rooms[roomId]){
+          //emit to all excpet new user
+          socket.to(roomId).emit('prevData',socket.id,roomId);
+          socket.to(roomId).emit('addUser',userName,userId,rooms[roomId].tempHost);
+          //emit to new user
+          io.to(socket.id).emit("addUsers",rooms[roomId].names,rooms[roomId].ids,rooms[roomId].tempHost);
+          rooms[roomId].ids.push(userId);
+          rooms[roomId].names.push(userName);
+        }
+        else{
+          rooms[roomId]={};
+          rooms[roomId].ids =[userId];
+          rooms[roomId].owner=userId;
+          rooms[roomId].tempHost =userId;
+          rooms[roomId].tempWrite =userId;
+          rooms[roomId].names=[userName];
+        }
+        socks[socket.id].userId=userId;
+        socks[socket.id].room=roomId;
+        socks[socket.id].userName=userName;
+        users[userId]=socket.id;
+        logger.info("rooms:"+JSON.stringify(rooms));
+        logger.info("socks:"+JSON.stringify(socks));
+        if(rooms[roomId].tempWrite==userId){
+          io.to(socket.id).emit('writePerm');
+        }
+        if(rooms[roomId].tempHost==userId){
+        io.to(socket.id).emit('makeHost');.000
+        }
+    });
+    socket.on('message',function(op,ranges,texts,roomId,userId){
+      if(verify(socket.id,userId)){
+        if(rooms[roomId].tempWrite==userId){
+          //emit to all except current user
+          logger.info('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].tempHost);
+          socket.to(roomId).emit('newMessage',op,ranges,texts,roomId);
+        }
+      }
+    });
+    socket.on('reqRepName',function(old_name,new_name,userId,roomId){
+        if(verify(socket.id,userId)){
+        //emit to all except current user
+        socket.to(roomId).emit('repName',old_name,new_name,userId);
+        }
+    });
+    socket.on('pastMessage',function(op,ranges,texts,roomId,userId,socid){
+      if(verify(socket.id,userId)){
+        if(rooms[roomId].tempHost==userId || op==3){
+          //emit to new user
+          io.to(socid).emit('newMessage',op,ranges,texts,roomId);
+          logger.info('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].tempHost);
+        }
+      }
+    });
+    socket.on('disconnect',function(){
+      if(socks[socket.id]){
+        //emit to all except current user
+        socket.to(socks[socket.id].room).emit("delUser",socks[socket.id].userName,socks[socket.id].userId,rooms[socks[socket.id].room].tempHost);
+        rem(socks[socket.id].room,socket.id);
+      }
+      logger.info(JSON.stringify(rooms));
+      logger.info('user just disconnected');
+    });
+    socket.on('radio', function(blob,roomId) {
+      //socket.to(roomId).emit('voice', blob);
+  });
+  socket.on('reqTempWriteAccess', function(userId,roomId) {
+    if(socks[socket.id]){
+      //emit to existing Host
+      logger.info('requestedWrite for'+userId+' in '+roomId);
+      io.to(users[rooms[roomId].tempHost]).emit("askWrite",userId,socks[socket.id].userName);
+    }
+});
+socket.on('giveWrite', function(userId,roomId) {
+  if(socks[socket.id]){
+    //emit to existing Write
+    logger.info('givenWrite for'+userId+' in '+roomId);
+    io.to(users[rooms[roomId].tempWrite]).emit("removeWrite",userId,socks[socket.id].userName);
+    //emit to new Writer
+    io.to(users[userId]).emit('writePerm');
+    rooms[roomId].tempWrite =userId;
+  }
+});
+socket.on('rejectWrite', function(userId,roomId) {
+  if(socks[socket.id]){
+    //emit to existing Host
+    logger.info('rejectedWrite for'+userId+' in '+roomId);
+    io.to(users[userId]).emit("writeRejected");
+  }
+});
+  });
+
+  function rem(roomId1,sock1){
+    var userId1=socks[sock1].userId;
+    var userName1=socks[sock1].userName;
+    if(rooms[roomId1]){
+      if(rooms[roomId1].ids.length==1){
+        delete socks[sock1];
+        delete rooms[roomId1];
+        delete users[userId1];
       }
       else{
-        rooms[roomId]={};
-        rooms[roomId].ids =[userId];
-        rooms[roomId].host =userId;
-        rooms[roomId].write =userId;
-        rooms[roomId].names=[userName];
-
-      }
-      users[socket.id].userId=userId;
-      users[socket.id].room=roomId;
-      users[socket.id].userName=userName;
-      console.log(rooms);
-  });
-  socket.on('message',function(op,ranges,texts,roomId,userId){
-    if(rooms[roomId].host==userId){
-      socket.to(roomId).emit('newMessage',op,ranges,texts,roomId);
-      console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].host);
-    }
-  });
-  socket.on('reqRepName',function(old_name,new_name,roomId){
-    socket.to(roomId).emit('repName',old_name,new_name);
-  });
-  socket.on('pastMessage',function(op,ranges,texts,roomId,userId,socid){
-    if(rooms[roomId].host==userId || op==3){
-      io.to(socid).emit('newMessage',op,ranges,texts,roomId);
-      console.log('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].host);
-    }
-  });
-  socket.on('disconnect',function(){
-    if(users[socket.id]){
-      socket.to(users[socket.id].room).emit("delUser",users[socket.id].userName,users[socket.id].userId,rooms[users[socket.id].room].host);
-      rem(users[socket.id].room,socket.id);
-    }
-    console.log(rooms);
-    console.log('user just disconnected');
-  });
-  socket.on('radio', function(blob,roomId) {
-    //socket.to(roomId).emit('voice', blob);
-});
-});
-server.listen(PORT,function(){
-  console.log(`Server is up on port ${PORT}`)
-});
-function rem(roomId1,sock1){
-  var userId1=users[sock1].userId;
-  var userName1=users[sock1].userName;
-  if(rooms[roomId1]){
-    if(rooms[roomId1].ids.length==1){
-      delete users[sock1];
-      delete rooms[roomId1];
+        var ind;
+        ind =rooms[roomId1].ids.indexOf(userId1);
+        rooms[roomId1].ids.splice(ind,1);
+        ind=rooms[roomId1].names.indexOf(userName1);
+        rooms[roomId1].names.splice(ind,1);
+        delete socks[sock1];
+      }     
     }
     else{
-      var ind;
-      ind =rooms[roomId1].ids.indexOf(userId1);
-      rooms[roomId1].ids.splice(ind,1);
-      ind=rooms[roomId1].names.indexOf(userName1);
-      rooms[roomId1].names.splice(ind,1);
-      delete users[sock1];
-    }     
+      logger.info("Error with room:"+roomId1);
+    }
   }
-}
+
+function verify(socId,userId1){
+    if(socks[socId] && socks[socId].userId==userId1){
+      return true;
+    }
+    return false;
+  }

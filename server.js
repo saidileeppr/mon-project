@@ -7,7 +7,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 var app = express();
 let server = http.createServer(app,{cookie: true});
-var logger= require('./public/logger');
+var logger= require('./logger');
 app.use(cors());
 app.use(cookieParser('Sai@2o00'));
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules'));
 app.use(routing);
 server.listen(PORT,function(){
-  logger.info(`Server is up on port ${PORT}`)
+  logger.info(`Server is up on port ${PORT}`);
 });
 
 //Sockets Code

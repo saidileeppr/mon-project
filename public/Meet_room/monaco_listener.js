@@ -15,7 +15,7 @@ require(["vs/editor/editor.main"],function () {
               texts.push(event.changes[i].text);
             }
             console.log(JSON.stringify(ranges),JSON.stringify(texts));
-              sendData(2,ranges,texts,loc_roomId1);
+              sendData(2,ranges,texts,roomDetail.roomId);
               recordAction(2,ranges,texts);
               bol=false;
             }
@@ -37,7 +37,7 @@ bol=true;edit=[];
               texts.push([event.changes[i].text]);
             }
               console.log(JSON.stringify(ranges),JSON.stringify(texts));
-              sendData(2,ranges,texts,loc_roomId1);
+              sendData(2,ranges,texts,roomDetail.roomId);
               recordAction(2,ranges,texts);
               bol=false;
               edit={};

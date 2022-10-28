@@ -94,7 +94,7 @@ io.on('connection',function(socket){
       logger.info('user just disconnected');
     });
     socket.on('radio', function(blob,roomId) {
-      //socket.to(roomId).emit('voice', blob);
+      socket.to(roomId).emit('voice', blob);
   });
   socket.on('reqTempWriteAccess', function(userId,roomId) {
     if(socks[socket.id]){

@@ -2,6 +2,7 @@ var bol;
 require(["vs/editor/editor.main"],function () {
    var edit;
    monEditor.onMouseUp(function(e){
+    console.log(monEditor.getSelection());
   });
   monEditor.onMouseDown(function(e){
     bol=true;        
@@ -20,6 +21,9 @@ require(["vs/editor/editor.main"],function () {
               bol=false;
             }
         });
+  });
+  monEditor.onKeyUp(function(e){
+    console.log(monEditor.getSelection());
   });
   monEditor.onKeyDown(function(e){
       bol=true;
@@ -43,6 +47,7 @@ bol=true;edit=[];
               edit={};
             }
         });
+        
       }
  }); 
 

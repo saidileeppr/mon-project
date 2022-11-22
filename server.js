@@ -27,15 +27,15 @@ var socks={};
 var users={};
 io.on('connection',function(socket){
     logger.info('user just connected');
-    socket.on('newUser',function(roomId,userId,userName){
+    socket.on('c2s_newUser',function(roomId,userId,userName){
       socks[socket.id]={};
       socket.join(roomId);
         if(rooms[roomId]){
           //emit to all excpet new user
-          socket.to(roomId).emit('prevData',socket.id,roomId);
-          socket.to(roomId).emit('addUser',userName,userId,rooms[roomId].tempHost);
+          socket.to(roomId).emit('s2c_prevData',socket.id,roomId);
+          socket.to(roomId).emit('s2c_addUser',userName,userId,rooms[roomId].tempHost);
           //emit to new user
-          io.to(socket.id).emit("addUsers",rooms[roomId].names,rooms[roomId].ids,rooms[roomId].tempHost);
+          io.to(socket.id).emit("s2c_addUsers",rooms[roomId].names,rooms[roomId].ids,rooms[roomId].tempHost);
           rooms[roomId].ids.push(userId);
           rooms[roomId].names.push(userName);
         }
@@ -54,32 +54,32 @@ io.on('connection',function(socket){
         logger.info("rooms:"+JSON.stringify(rooms));
         logger.info("socks:"+JSON.stringify(socks));
         if(rooms[roomId].tempWrite==userId){
-          io.to(socket.id).emit('writePerm');
+          io.to(socket.id).emit('s2c_writePerm');
         }
         if(rooms[roomId].tempHost==userId){
-        io.to(socket.id).emit('makeHost');.000
+        io.to(socket.id).emit('s2c_makeHost');.000
         }
     });
-    socket.on('message',function(op,ranges,texts,roomId,userId){
+    socket.on('c2s_message',function(op,ranges,texts,roomId,userId){
       if(verify(socket.id,userId)){
         if(rooms[roomId].tempWrite==userId){
           //emit to all except current user
           logger.info('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].tempHost);
-          socket.to(roomId).emit('newMessage',op,ranges,texts,roomId);
+          socket.to(roomId).emit('s2c_newMessage',op,ranges,texts,roomId);
         }
       }
     });
-    socket.on('reqRepName',function(old_name,new_name,userId,roomId){
+    socket.on('c2s_reqRepName',function(old_name,new_name,userId,roomId){
         if(verify(socket.id,userId)){
         //emit to all except current user
-        socket.to(roomId).emit('repName',old_name,new_name,userId);
+        socket.to(roomId).emit('s2c_repName',old_name,new_name,userId);
         }
     });
-    socket.on('pastMessage',function(op,ranges,texts,roomId,userId,socid){
+    socket.on('c2s_pastMessage',function(op,ranges,texts,roomId,userId,socid){
       if(verify(socket.id,userId)){
         if(rooms[roomId].tempHost==userId || op==3){
           //emit to new user
-          io.to(socid).emit('newMessage',op,ranges,texts,roomId);
+          io.to(socid).emit('s2c_newMessage',op,ranges,texts,roomId);
           logger.info('Message from:'+userId+"   To room:"+roomId+"   Host:"+rooms[roomId].tempHost);
         }
       }
@@ -87,37 +87,37 @@ io.on('connection',function(socket){
     socket.on('disconnect',function(){
       if(socks[socket.id]){
         //emit to all except current user
-        socket.to(socks[socket.id].room).emit("delUser",socks[socket.id].userName,socks[socket.id].userId,rooms[socks[socket.id].room].tempHost);
+        socket.to(socks[socket.id].room).emit("s2c_delUser",socks[socket.id].userName,socks[socket.id].userId,rooms[socks[socket.id].room].tempHost);
         rem(socks[socket.id].room,socket.id);
       }
       logger.info(JSON.stringify(rooms));
       logger.info('user just disconnected');
     });
-    socket.on('radio', function(blob,roomId) {
-      socket.to(roomId).emit('voice', blob);
+    socket.on('c2s_radio', function(blob,roomId) {
+      socket.to(roomId).emit('s2c_voice', blob);
   });
-  socket.on('reqTempWriteAccess', function(userId,roomId) {
+  socket.on('c2s_reqTempWriteAccess', function(userId,roomId) {
     if(socks[socket.id]){
       //emit to existing Host
       logger.info('requestedWrite for'+userId+' in '+roomId);
-      io.to(users[rooms[roomId].tempHost]).emit("askWrite",userId,socks[socket.id].userName);
+      io.to(users[rooms[roomId].tempHost]).emit("s2c_askWrite",userId,socks[socket.id].userName);
     }
 });
-socket.on('giveWrite', function(userId,roomId) {
+socket.on('c2s_giveWrite', function(userId,roomId) {
   if(socks[socket.id]){
     //emit to existing Write
     logger.info('givenWrite for'+userId+' in '+roomId);
-    io.to(users[rooms[roomId].tempWrite]).emit("removeWrite",userId,socks[socket.id].userName);
+    io.to(users[rooms[roomId].tempWrite]).emit("s2c_removeWrite",userId,socks[socket.id].userName);
     //emit to new Writer
-    io.to(users[userId]).emit('writePerm');
+    io.to(users[userId]).emit('s2c_writePerm');
     rooms[roomId].tempWrite =userId;
   }
 });
-socket.on('rejectWrite', function(userId,roomId) {
+socket.on('c2s_rejectWrite', function(userId,roomId) {
   if(socks[socket.id]){
     //emit to existing Host
     logger.info('rejectedWrite for'+userId+' in '+roomId);
-    io.to(users[userId]).emit("writeRejected");
+    io.to(users[userId]).emit("s2c_writeRejected");
   }
 });
   });

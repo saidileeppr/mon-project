@@ -50,14 +50,14 @@ require(["vs/editor/editor.main"],function () {
       cookieUserid=getCookie('userId');
     }
     if(roomDetail.roomId!=""){
-      socket.emit('newUser',roomDetail.roomId,cookieUserid,cookieUsername);
+      socket.emit('c2s_newUser',roomDetail.roomId,cookieUserid,cookieUsername);
       roomDetail.userId=cookieUserid;
       memList.innerHTML="<div>Me</div>"+"<div id=\""+cookieUserid+"\">"+cookieUsername+"</div>";
       memList.innerHTML+="<button id=\"changeName\" onclick=changeName()>Change Name</button>"+"</div>";
       memList.innerHTML+="<div>Members</div>";
     }
   });
-  socket.on("makeHost",function(){
+  socket.on("s2c_makeHost",function(){
     isHost=1;
     roomDetail.host=cookieUserid;
     cookieUsername=getCookie('userName');
@@ -66,7 +66,7 @@ require(["vs/editor/editor.main"],function () {
     console.log("<div id=\""+cookieUserid+"\">"+cookieUsername+"</div>","<div id=\""+cookieUserid+"\">"+cookieUsername+" (Host)</div>");
     memList.innerHTML=memList.innerHTML.replace("<div id=\""+cookieUserid+"\">"+cookieUsername+"</div>","<div id=\""+cookieUserid+"\">"+cookieUsername+" (Host)</div>");
   });
-  socket.on('writePerm',function(){
+  socket.on('s2c_Perm',function(){
     canWrite=1;
     roomDetail.write=cookieUserid;
     console.log('Write');
@@ -79,7 +79,7 @@ require(["vs/editor/editor.main"],function () {
     let hidden = element.getAttribute("hidden");
     element.setAttribute("hidden", "hidden");
   });
-  socket.on("addUsers",function(userNames,userIds,hostId){
+  socket.on("s2c_addUsers",function(userNames,userIds,hostId){
     cookieUsername=getCookie('userName');
     cookieUserid=getCookie('userId');
       for (i=0;i<userNames.length;i++){
@@ -92,7 +92,7 @@ require(["vs/editor/editor.main"],function () {
         }
       }
   });
-  socket.on("addUser",function(userName,userId,hostId){
+  socket.on("s2c_addUser",function(userName,userId,hostId){
     cookieUsername=getCookie('userName');
     cookieUserid=getCookie('userId');
       if(userId==hostId && userId!=cookieUserid){
@@ -102,7 +102,7 @@ require(["vs/editor/editor.main"],function () {
         memList.innerHTML+="<div id=\""+userId+"\">"+userName+"</div>";
       }
   });
-  socket.on("delUser",function(userName,userId,hostId){
+  socket.on("s2c_delUser",function(userName,userId,hostId){
     console.log("Deleting User:"+userName);
       if(userId==hostId){
         memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId+"\">"+userName+" (Host)</div>","");
@@ -117,11 +117,11 @@ require(["vs/editor/editor.main"],function () {
     console.log('disconnected from server');
     socket.emit('userDisc');
   });
-  socket.on('newMessage',function (op,ranges,texts,roomId) {
+  socket.on('s2c_newMessage',function (op,ranges,texts,roomId) {
     console.log('new message');
       realTime(op,ranges,texts,roomId);
   });
-  socket.on('removeWrite',function () {
+  socket.on('s2c_removeWrite',function () {
     canWrite=0;
     console.log('Lost Write');
     require(["vs/editor/editor.main"],function () {
@@ -133,38 +133,38 @@ require(["vs/editor/editor.main"],function () {
     let hidden = element.getAttribute("hidden");
     element.removeAttribute("hidden");
   });
-  socket.on('askWrite',function (userId,userName) {
+  socket.on('s2c_askWrite',function (userId,userName) {
     if(confirm('Give Write Access to '+userName)){
-      socket.emit('giveWrite',userId,roomDetail.roomId);
+      socket.emit('c2s_giveWrite',userId,roomDetail.roomId);
     }
     else{
-      socket.emit('rejectWrite',userId,roomDetail.roomId);
+      socket.emit('c2s_rejectWrite',userId,roomDetail.roomId);
     }
   });
-  socket.on('writeRejected',function () {
+  socket.on('s2c_writeRejected',function () {
     console.log('Write rejected');
     alert('Write Access rejected');
   });
-  socket.on('prevData',function(socid,roomId){
+  socket.on('s2c_prevData',function(socid,roomId){
     console.log('newUser into room:'+roomId);
     require(["vs/editor/editor.main"],function () {
       var con=model.getValue();
       sendNewData(3,[[1,1,1,1]],[con],roomId,socid);
       });
     });
-    socket.on('repName',function(old_name,new_name,userId){
+    socket.on('s2c_repName',function(old_name,new_name,userId){
       memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId+"\">"+old_name,"<div id=\""+userId+"\">"+new_name);
       memList.innerHTML=memList.innerHTML.replace("<div id=\""+userId+"\">"+old_name+" (Host)","<div id=\""+userId+"\">"+new_name+" (Host)");
     });
 function sendNewData(op,ranges,texts,roomId,socid) {
   cookieUserid=getCookie('userId');
   console.log("send new data to socketId:",socid);
-  socket.emit('pastMessage',op,ranges,texts,roomId,cookieUserid,socid);
+  socket.emit('c2s_pastMessage',op,ranges,texts,roomId,cookieUserid,socid);
 }
 function sendData(op,ranges,texts,roomId) {
     cookieUserid=getCookie('userId');
   console.log("send to room:",roomId,cookieUserid);
-    socket.emit('message',op,ranges,texts,roomId,cookieUserid);
+    socket.emit('c2s_message',op,ranges,texts,roomId,cookieUserid);
 }
 function generateId(len){
   var ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-+=;:[]{}!@#$^*()`~';
@@ -186,7 +186,7 @@ function changeName(){
   var pre_name=getCookie('userName');
   cookieUsername=prompt("Your  name?");
   setCookie('userName',cookieUsername);
-  socket.emit('reqRepName',pre_name,cookieUsername,cookieUserid,roomDetail.roomId);
+  socket.emit('c2s_reqRepName',pre_name,cookieUsername,cookieUserid,roomDetail.roomId);
   memList.innerHTML=memList.innerHTML.replace("<div id=\""+cookieUserid+"\">"+pre_name,"<div id=\""+cookieUserid+"\">"+cookieUsername);
   memList.innerHTML=memList.innerHTML.replace("<div id=\""+cookieUserid+"\">"+pre_name+" (Host)","<div id=\""+cookieUserid+"\">"+cookieUsername+" (Host)");
 }
@@ -225,5 +225,5 @@ function setCookie(name, value) {
 function reqWriteAccess(){
   cookieUsername=getCookie('userName');
   cookieUserid=getCookie('userId');
-  socket.emit('reqTempWriteAccess',cookieUserid,roomDetail.roomId);
+  socket.emit('c2s_reqTempWriteAccess',cookieUserid,roomDetail.roomId);
 }

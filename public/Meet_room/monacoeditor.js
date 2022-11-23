@@ -66,7 +66,7 @@ require(["vs/editor/editor.main"],function () {
     console.log("<div id=\""+cookieUserid+"\">"+cookieUsername+"</div>","<div id=\""+cookieUserid+"\">"+cookieUsername+" (Host)</div>");
     memList.innerHTML=memList.innerHTML.replace("<div id=\""+cookieUserid+"\">"+cookieUsername+"</div>","<div id=\""+cookieUserid+"\">"+cookieUsername+" (Host)</div>");
   });
-  socket.on('s2c_Perm',function(){
+  socket.on('s2c_writePerm',function(){
     canWrite=1;
     roomDetail.write=cookieUserid;
     console.log('Write');

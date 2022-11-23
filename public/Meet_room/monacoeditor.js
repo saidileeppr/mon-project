@@ -227,3 +227,10 @@ function reqWriteAccess(){
   cookieUserid=getCookie('userId');
   socket.emit('c2s_reqTempWriteAccess',cookieUserid,roomDetail.roomId);
 }
+
+function execute(){
+  require(["vs/editor/editor.main"],function () {
+    var code=model.getValue();
+    console.log(code);
+    });
+}

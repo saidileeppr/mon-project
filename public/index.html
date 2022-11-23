@@ -14,13 +14,6 @@
     <button onclick="func1()" type="button" id="Submit" value="Submit">Submit</button>
   </form>
   <script src="./socket.io/socket.io.js"></script>
-  <script>
-      let socket = io();
-      but1=document.getElementById('Submit');
-      function func1(){
-      socket.emit('RoomEntry',$('#roomId').val());
-      window.location.replace( window.location.href+$('#roomId').val());
-    }
-  </script>
+  <script src="/indexjs.js"></script>
 </body>
 </html>

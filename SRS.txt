@@ -1,0 +1,15 @@
+Application to have realtime code learning sessions.
+Functions:
+Meet_Room:
+    1)User should be able to create a room. The user who creates a room becomes host by default.
+    2)Host should have write permission by default.
+    3)Users who connect to a created room become members of that room.
+    4)Host should be able to grant or revoke write permission to any user.
+    5)Only one user at a time has access to write.
+    6)Members can request write permission from host and host can either grant or revoke it.
+    7)Only the person with write permission can edit the editor.
+    8)When the host logs out any member should become temp Host until main host returns.
+    9)Host should be able to record the session and get the file downloaded at the end.
+Player:
+    1)user should be able to play downloaded sessions.
+    

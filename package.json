@@ -11,15 +11,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "g": "^2.0.1",
     "http": "0.0.1-security",
-    "nodemon": "^2.0.7",
+    "monaco": "^1.201704190613.0",
+    "monaco-editor": "^0.33.0",
+    "nodemon": "^2.0.18",
     "path": "^0.12.7",
-    "socket.io": "^4.1.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
+    "socket.io": "^4.1.1",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "engines": {
     "node": "14.x"

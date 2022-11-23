@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>  
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <title>Editor Room</title>
+</head>
+<body>
+  <p>welcome to the chat app</p>
+  <button onclick="Record()" value="Record" id="record">Record</button><br>
+  <button onclick="reqWriteAccess()" value="Request Write Access" id="reqWriteAccess">Request Write Access</button><br>
+  <label for="cars">Choose language:</label>
+  <select id="langg" name="langg">
+    <option value="c">C</option>
+    <option value="c++">C++</option>
+    <option value="java">Java</option>
+    <option value="python" selected>Python</option>
+  </select>
+  <div style="height:1000px;width:75%;color:blueviolet;" id="myInput" ></div>
+  <div style="position:absolute;top:5%;position:absolute;right:5%;" id="members"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/monaco-editor/min/vs/loader.js"></script>
+  <script src="/Meet_room/monacoeditor.js"></script>
+  <script src="/Meet_room/monaco_audio.js"></script>
+  <script src="/Meet_room/monaco_listener.js"></script>
+  <script src="/Meet_room/monacoupdate.js"></script>
+  <script src="/Meet_room/monacorecJSON.js"></script>
+</body>
+</html>

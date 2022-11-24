@@ -13,7 +13,7 @@ io.on('connection',function(socket){
       socks[socket.id]={};
       socket.join(roomId);
         if(rooms[roomId]){
-          //emit to all excpet new user
+          //emit to all except new user
           socket.to(roomId).emit('s2c_prevData',socket.id,roomId);
           socket.to(roomId).emit('s2c_addUser',userName,userId,rooms[roomId].tempHost);
           //emit to new user

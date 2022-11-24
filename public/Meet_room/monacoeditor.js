@@ -167,7 +167,7 @@ function sendData(op,ranges,texts,roomId) {
     socket.emit('c2s_message',op,ranges,texts,roomId,cookieUserid);
 }
 function generateId(len){
-  var ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-+=;:[]{}!@#$^*()`~';
+  var ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var rtn = '';
   for(var i=0;i<len;i++){
       rtn += ALPHABET.charAt(Math.floor(Math.random()*ALPHABET.length));

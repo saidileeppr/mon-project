@@ -1,4 +1,4 @@
-var roomDetail={};
+/*var roomDetail={};
 var socketDetail={"a":[],"b":[],"c":[],"d":[],"e":[],"f":[],"g":[],"h":[],"i":[],"j":[],"k":[],"l":[],"m":[],"n":[],
 "o":[],"p":[],"q":[],"r":[],"s":[],"t":[],"u":[],"v":[],"w":[],"x":[],"y":[],"z":[],"el":[]};
 insertData({"userId":"abcd","socketId":"jgf","name":"brave"},'agh');
@@ -50,4 +50,7 @@ function delObj(arr,field,value,roomId){
 }
 console.log(findField(roomDetail,"userId","abcd3","socketId",'bhgh'));
 delObj(roomDetail,"userId","abcd3",'bhgh');
-console.log(roomDetail);
+console.log(roomDetail);*/
+
+all_json=[{"userId":"abcd1","socketId":"jgf1","name":"brave1","roomId":"abcd"},{"userId":"abcd2","socketId":"jgf2","name":"brave2","roomId":"abcd"},{"userId":"abcd3","socketId":"jgf3","name":"brave3","roomId":"abcd1"}];
+console.log(all_json.filter(function(all_json){return all_json["roomId"] == "abcd"}));

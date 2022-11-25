@@ -3,7 +3,7 @@ var constraints = {audio: {
   }};
   navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
       var mediaRecorder = new MediaRecorder(mediaStream);
-      this.chunks= [];
+      var chunks= [];
       mediaRecorder.onstart = function(e) {
           this.chunks = [];
       };

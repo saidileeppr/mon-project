@@ -1,77 +1,109 @@
+/* ------- Landing Page CSS starts --------*/
 body{
+    display:flex;
+    margin:0;
+    padding:0;
+    min-height: 100vh;
+    background: #333;
+    justify-content: center;
     align-items: center;
+    font-family: arial;
+  }
+  .title{
+    display:flex;
+    align-items: center;    
+    justify-content: center;
+    position: relative;
+    font-size:150px;
+    margin: -400px 0 -250px 0 ;
+    color: #444;
+    filter:drop-shadow(2px 4px 6px black);
+
+  }
+  span {
+    color: #555;
+    filter:drop-shadow(2px 4px 6px #fff);
+    
+  }
+  .container {
+    width: 1000px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap:wrap;  
+  }
+  
+  .container .card{
+    position: relative;
+    
+  }
+  
+  .container .card .face{
+    width:300px;
+    height: 200px;
+    transition:.4s;
+    color:white;
+    border: 1px solid #555;
+    box-shadow:  20px 30px 25px rgba(0,0,0,0.75);
+  }
+
+  .container .card .face.face1{
+    position: relative;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-content:center;
+    align-items: center;
+    z-index: 1;
+    transform: translateY(10px);
+    border-radius:15px;
+    
+  }
+  
+  .container .card:hover .face.face1 {
+    transform: translateY(0);
+    border:0px;
+    box-shadow:
+    inset 0 0 20px whitesmoke,
+    inset 20px 0 60px #f0f,
+    inset -20px 0 60px #0ff,
+    inset 20px 0 200px #f0f,
+    inset -20px 0 200px #0ff,
+    0 0 15px #fff,
+    -10px 0 25px #f0f,
+    10px 0 25px #0ff;
+     
+  }
+  .container .card .face.face1 .content{
+    opacity: .2;
+    transition:  0.25s;
+    text-align: center;
+  }
+  
+  .container .card:hover .face.face1 .content{
+    opacity: 1;
+   
+  }
+  
+  .container .card .face.face1 .content i{
+    font-size: 5em;
+    color: white;
+    display: inline-block;
+     
+  }
+  
+  .container .card .face.face1 .content h3{
+    font-size: 1.5em;
+    color: white;
     text-align: center;
     
-}
-.conc{
-    width: 317px;
-    margin: auto;
-    background: #1A1B21;
-}
-.logo{
-    width:317px;
-    height: 317px;
-}
-header{
-    color: white;
-    line-height:9px;
-    font-family: inter;
-}
-.sub-title{
-    color: #F3BF99;
-
-}
-.btns{
-    display: flex;
-    
-}
-.btn1,.btn2{
-    height: 34px;
-    width: 115px;
-    margin:auto;
-    justify-content: center;
-    border-radius:6px;
-    font-family: inter;
-    font-size:14px;
-    font-weight: 500;
-}
-.btn1{
-    color: #374151;
-    background-color: white;
-    margin-left:35px;
-}
-.btn2{
-    background-color: #5093E2;
-    color: white;
-    margin-right: 35px;
-}
-.mainc{
-    width:247px;
-    height: 201px;
-    text-align: left;
-    line-height: 1.0em;
-    margin:36px 36px 0 36px;
-}
-.p1,.p2{
-    font-size:11px;
-    font-weight: 500;
-    font-family: inter;
-    margin-top: 0;
-}
-.main-h1,.main-h2{
-    margin-bottom: 0;
-    font-size:16px;
-}
-#icon1{
-    width: 25px;
-    color: black;
-}
-.f-icon{
-    color: white;
-    height: 30px;
-    width: 30px;
-    margin:12px;
-}
-.footer{
-    background-color:#161619;
-}
+  
+  }
+  
+  .container .card .face.face1 .content a{
+     transition: .5s;
+  }
+  .btn{
+    font-size:30px;
+  }
+/* ------- Landing Page CSS ends --------*/

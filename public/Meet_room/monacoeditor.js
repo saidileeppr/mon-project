@@ -79,16 +79,17 @@ require(["vs/editor/editor.main"],function () {
     let hidden = element.getAttribute("hidden");
     element.setAttribute("hidden", "hidden");
   });
-  socket.on("s2c_addUsers",function(userNames,userIds,hostId){
+  socket.on("s2c_addUsers",function(userData,hostId){
     cookieUsername=getCookie('userName');
     cookieUserid=getCookie('userId');
-      for (i=0;i<userNames.length;i++){
-        if(userIds[i]==hostId && userIds[i]!=cookieUserid){
+    console.log(userData,hostId);
+      for (i=0;i<userData.length;i++){
+        if(userData[i].userId==hostId && userData[i].userId!=cookieUserid && userData[i].userId!=cookieUserid){
           roomDetail.host=hostId;
-          memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+userIds[i]+"\">"+userNames[i]+" (Host)</div>");
+          memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+userData[i].userId+"\">"+userData[i].username+" (Host)</div>");
         }
-        else{ 
-          memList.innerHTML+="<div id=\""+userIds[i]+"\">"+userNames[i]+"</div>";
+        else if(userData[i].userId!=cookieUserid){ 
+          memList.innerHTML+="<div id=\""+userData[i].userId+"\">"+userData[i].username+"</div>";
         }
       }
   });

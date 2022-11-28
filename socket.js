@@ -1,17 +1,23 @@
 //Sockets Code
+const {userRoomService}=require('./api/services');
 const server= require('./server');
 const socketIO = require('socket.io');
 const PORT = process.env.PORT ||5123;
 var logger= require('./logger');
+const e = require('express');
 let io = socketIO(server);
 var rooms={};
 var socks={};
 var users={};
+const {access,entry_exit,messages}=require('./socks');
 io.on('connection',function(socket){
-    logger.info('user just connected');
-    socket.on('c2s_newUser',function(roomId,userId,userName){
+  entry_exit(socket,io);
+  access(socket,io);
+  messages(socket,io);
+   /* socket.on('c2s_newUser',async function(roomId,userId,userName){
+
       socks[socket.id]={};
-      socket.join(roomId);
+      //socket.join(roomId);
         if(rooms[roomId]){
           //emit to all except new user
           socket.to(roomId).emit('s2c_prevData',socket.id,roomId);
@@ -39,7 +45,7 @@ io.on('connection',function(socket){
           io.to(socket.id).emit('s2c_writePerm');
         }
         if(rooms[roomId].tempHost==userId){
-        io.to(socket.id).emit('s2c_makeHost');.000
+        io.to(socket.id).emit('s2c_makeHost');
         }
     });
     socket.on('c2s_message',function(op,ranges,texts,roomId,userId){
@@ -51,7 +57,8 @@ io.on('connection',function(socket){
         }
       }
     });
-    socket.on('c2s_reqRepName',function(old_name,new_name,userId,roomId){
+    
+       socket.on('c2s_reqRepName',function(old_name,new_name,userId,roomId){
         if(verify(socket.id,userId)){
         //emit to all except current user
         socket.to(roomId).emit('s2c_repName',old_name,new_name,userId);
@@ -101,9 +108,10 @@ socket.on('c2s_rejectWrite', function(userId,roomId) {
     logger.info('rejectedWrite for'+userId+' in '+roomId);
     io.to(users[userId]).emit("s2c_writeRejected");
   }
-});
+});*/
   });
 
+/*
     function rem(roomId1,sock1){
     var userId1=socks[sock1].userId;
     var userName1=socks[sock1].userName;
@@ -132,4 +140,4 @@ function verify(socId,userId1){
       return true;
     }
     return false;
-  }
+  }*/

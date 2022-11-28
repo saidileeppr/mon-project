@@ -14,7 +14,7 @@ var constraints = {audio: {
       };
       mediaRecorder.onstop = function(e) {
         var aud = new Blob(this.chunks, { 'type' : 'audio/ogg; codecs=opus' });
-        //socket.emit('c2s_radio', aud,roomDetail.roomId);
+        socket.emit('c2s_radio', aud,roomDetail.roomId);
       };
       mediaRecorder.start();
       setInterval(function() {

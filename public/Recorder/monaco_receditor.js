@@ -1,8 +1,10 @@
-var rec='';
-var arr='';
-var arriter=0;
-var langg=document.getElementById("langg");
-var audFile;
+let  rec='';
+let  arr='';
+let  arriter=0;
+let  langg=document.getElementById("langg");
+let  audFile;
+let model;
+let monEditor;
 require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
 require(["vs/editor/editor.main"],function () {
   model=monaco.editor.createModel(

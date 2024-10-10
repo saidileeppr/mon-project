@@ -16,9 +16,9 @@ router.get('/',function(req,res){
   router.get('*',function(req,res){
     res.json({Status:404,Message:"Page Not Founnd"});
   });
+  module.exports = router;
 }
 catch(err){
     console.log(err);
 }
 
-module.exports = router;

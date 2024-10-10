@@ -1,12 +1,12 @@
 //Sockets Code
 const server= require('./server');
 const socketIO = require('socket.io');
-const PORT = process.env.PORT ||5123;
-var logger= require('./logger');
+
+let logger= require('./logger');
 let io = socketIO(server);
-var rooms={};
-var socks={};
-var users={};
+let rooms={};
+let socks={};
+let users={};
 io.on('connection',function(socket){
     logger.info('user just connected');
     socket.on('c2s_newUser',function(roomId,userId,userName){
@@ -39,7 +39,7 @@ io.on('connection',function(socket){
           io.to(socket.id).emit('s2c_writePerm');
         }
         if(rooms[roomId].tempHost==userId){
-        io.to(socket.id).emit('s2c_makeHost');.000
+        io.to(socket.id).emit('s2c_makeHost');
         }
     });
     socket.on('c2s_message',function(op,ranges,texts,roomId,userId){
@@ -105,8 +105,8 @@ socket.on('c2s_rejectWrite', function(userId,roomId) {
   });
 
     function rem(roomId1,sock1){
-    var userId1=socks[sock1].userId;
-    var userName1=socks[sock1].userName;
+    let userId1=socks[sock1].userId;
+    let userName1=socks[sock1].userName;
     if(rooms[roomId1]){
       if(rooms[roomId1].ids.length==1){
         delete socks[sock1];
@@ -114,7 +114,7 @@ socket.on('c2s_rejectWrite', function(userId,roomId) {
         delete users[userId1];
       }
       else{
-        var ind;
+        let ind;
         ind =rooms[roomId1].ids.indexOf(userId1);
         rooms[roomId1].ids.splice(ind,1);
         ind=rooms[roomId1].names.indexOf(userName1);
@@ -128,8 +128,5 @@ socket.on('c2s_rejectWrite', function(userId,roomId) {
   }
 
 function verify(socId,userId1){
-    if(socks[socId] && socks[socId].userId==userId1){
-      return true;
-    }
-    return false;
+    return !!(socks[socId] && socks[socId].userId==userId1);
   }

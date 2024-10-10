@@ -7,9 +7,9 @@ function realTime(op,ranges,texts,roomId1=''){
             if(op==3){
                 model.setValue("");
             }
-            var changes=[];
-            for(i=0;i<ranges.length;i++){
-                var monacoRange=new monaco.Range(ranges[i][0],ranges[i][1],ranges[i][2],ranges[i][3]);
+            let changes=[];
+            for(let i=0;i<ranges.length;i++){
+                let monacoRange=new monaco.Range(ranges[i][0],ranges[i][1],ranges[i][2],ranges[i][3]);
                 changes.push({identifier: "my-source",range:monacoRange,text:texts[i],forceMoveMarkers:true});
             }
             console.log(changes);

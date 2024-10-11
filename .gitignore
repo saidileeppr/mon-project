@@ -1,6 +1,2 @@
 /node_modules
-<<<<<<< HEAD
-/logs/*
-=======
-/logs
->>>>>>> b1e9443f81b34c25c41ada51ea0ad79e73fdc59d
+*.pem

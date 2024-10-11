@@ -11,8 +11,9 @@ let audioURL;
 let audURL=document.createElement('div');
 audURL.id="audBlob";
 document.body.appendChild(audURL);
-navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
-  const mediaRecorder = new MediaRecorder(mediaStream);
+let mediaRecorder;
+navigator.mediaDevices.getUserMedia({audio: {autoGainControl: false}}).then(function(mediaStream) {
+  mediaRecorder = new MediaRecorder(mediaStream);
 mediaRecorder.onstart = function(e) {
   console.log("Start");
   audArray=[];
@@ -52,7 +53,7 @@ but.onclick =function(){
             // con=con.replace("\t","\\t");
             recArr=[[3,[[1,1,1,1]],[con]]];
           });
-        rec[arriter]=arr;
+        rec[arriter]=recArr;
         recArr=[];
         arriter++;
       }

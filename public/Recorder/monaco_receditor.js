@@ -1,6 +1,3 @@
-let  rec='';
-let  arr='';
-let  arriter=0;
 let  langg=document.getElementById("langg");
 let  audFile;
 let model;

@@ -4,6 +4,7 @@ let  x;
 let  bol;
 let  con=true;
 let edit;
+require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
 require(["vs/editor/editor.main"],function () {
    monEditor.onMouseUp(function(e){
   });

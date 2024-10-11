@@ -36,18 +36,17 @@ document.getElementById('import').onclick = function() {
     aud.src=window.URL.createObjectURL(blob);
     activity=(result.Activity);
     aud.controls = true;
-    load(1);
+    load(0);
     let arrlen=Object.keys(activity).length;
     aud.onplaying=function(){};
     aud.onpause=function(){};
 aud.ontimeupdate = function(){
-  console.log('run');
   let currTime=Math.floor(aud.currentTime);
       if(currTime!=lastsec && currTime<arrlen){  
   if(aud.paused){
         load(currTime);
       }
-    else{
+    else if(currTime==lastsec+1){
         console.log('play',currTime,lastsec);
         play(currTime);
       }
@@ -58,14 +57,14 @@ function load(tim){
 let min=Math.floor(tim/60);
 console.log(tim,lastsec);
 i=min*60;
-console.log('pre',i);
-for (;i<tim;i++){
+console.log('checkpoint',i);
+for (;i<=tim;i++){
   for (const element of activity[i]){
         realTime(element[0],element[1],element[2]);
       }
     }
-  console.log('pre',i,activity[i]);
-  lastsec=i;
+  console.log('loadpoint',tim,activity[tim]);
+  lastsec=tim;
 }
 async function play(i){
   lastsec=i;
@@ -80,7 +79,7 @@ async function play(i){
 function sleep(ms) {
   return new Promise(
     resolve => setTimeout(resolve, ms));
-        } 
+  } 
   fr.readAsText(files.item(0));
 };
 function convertURIToBinary(dataURI) {

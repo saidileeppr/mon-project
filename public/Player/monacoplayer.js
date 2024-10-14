@@ -43,10 +43,10 @@ document.getElementById('import').onclick = function() {
 aud.ontimeupdate = function(){
   let currTime=Math.floor(aud.currentTime);
       if(currTime!=lastsec && currTime<arrlen){  
-  if(aud.paused){
+  if(currTime==lastsec+1){
         load(currTime);
       }
-    else if(currTime==lastsec+1){
+    else{
         console.log('play',currTime,lastsec);
         play(currTime);
       }

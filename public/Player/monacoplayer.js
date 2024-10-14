@@ -1,4 +1,6 @@
 require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
+let model;
+let monEditor;
 require(["vs/editor/editor.main"],function () {
   model=monaco.editor.createModel(
   "",
@@ -15,33 +17,33 @@ require(["vs/editor/editor.main"],function () {
     "readOnly":true
 });
 });
-var lastsec=0;
-var tim=0;
-var i=0
+let lastsec=0;
+let tim=0;
+let i=0
 document.getElementById('import').onclick = function() {
-  var filepoint = document.getElementById('selectFiles');
-	var files = filepoint.files;
+  let filepoint = document.getElementById('selectFiles');
+	let files = filepoint.files;
+  let activity;
   if (files.length <= 0) {
     return false;
   }
-  var fr = new FileReader();
+  let fr = new FileReader();
   fr.onload = function(e) { 
-    var result = JSON.parse(e.target.result);
-    var binary = convertURIToBinary(result.Audio.replace("data:audio/ogg; codecs=opus;base64,",""));
-    var blob = new Blob([binary], {type: 'audio/ogg , codecs : opus'});
-    var aud=document.getElementById('audRec');
+    let result = JSON.parse(e.target.result);
+    let binary = convertURIToBinary(result.Audio.replace("data:audio/ogg; codecs=opus;base64,",""));
+    let blob = new Blob([binary], {type: 'audio/ogg , codecs : opus'});
+    let aud=document.getElementById('audRec');
     aud.src=window.URL.createObjectURL(blob);
     activity=(result.Activity);
     aud.controls = true;
-    load(1);
-    var arrlen=Object.keys(activity).length;
+    load(0);
+    let arrlen=Object.keys(activity).length;
     aud.onplaying=function(){};
     aud.onpause=function(){};
 aud.ontimeupdate = function(){
-  console.log('run');
-  var currTime=Math.floor(aud.currentTime);
+  let currTime=Math.floor(aud.currentTime);
       if(currTime!=lastsec && currTime<arrlen){  
-  if(aud.paused){
+  if(currTime!=lastsec+1 || aud.paused){
         load(currTime);
       }
     else{
@@ -52,33 +54,32 @@ aud.ontimeupdate = function(){
   };
 }
 function load(tim){
-var min=Math.floor(tim/60);
+let min=Math.floor(tim/60);
 console.log(tim,lastsec);
 i=min*60;
-console.log('pre',i);
-for (;i<tim;i++){
-  for (j=0;j<activity[i].length;j++){
-        realTime(activity[i][j][0],activity[i][j][1],activity[i][j][2]);
+console.log('checkpoint',i);
+for (;i<=tim;i++){
+  for (const element of activity[i]){
+        realTime(element[0],element[1],element[2]);
       }
     }
-  console.log('pre',i,activity[i]);
-  lastsec=i;
+  console.log('loadpoint',tim,activity[tim]);
+  lastsec=tim;
 }
 async function play(i){
-  var j=0;
   lastsec=i;
   if(activity[i].length!=0){
-    for (j=0;j<activity[i].length;j++){
+    for (const element of activity[i]){
       await sleep(150);
-      console.log(activity[i][j][0],activity[i][j][1],activity[i][j][2]);
-      realTime(activity[i][j][0],activity[i][j][1],activity[i][j][2]);
+      console.log(element[0],element[1],element[2]);
+      realTime(element[0],element[1],element[2]);
     }
   }
 }
 function sleep(ms) {
   return new Promise(
     resolve => setTimeout(resolve, ms));
-        } 
+  } 
   fr.readAsText(files.item(0));
 };
 function convertURIToBinary(dataURI) {

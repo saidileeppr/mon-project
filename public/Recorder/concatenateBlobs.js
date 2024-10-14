@@ -1,15 +1,15 @@
 
 (function() {
     window.ConcatenateBlobs = function(blobs, type, callback) {
-        var buffers = [];
+        let  buffers = [];
 
-        var index = 0;
+        let  index = 0;
 
         function readAsArrayBuffer() {
             if (!blobs[index]) {
                 return concatenateBuffers();
             }
-            var reader = new FileReader();
+            let  reader = new FileReader();
             reader.onload = function(event) {
                 buffers.push(event.target.result);
                 index++;
@@ -21,16 +21,16 @@
         readAsArrayBuffer();
 
         function concatenateBuffers() {
-            var byteLength = 0;
+            let  byteLength = 0;
             buffers.forEach(function(buffer) {
                 byteLength += buffer.byteLength;
             });
             
-            var tmp = new Uint16Array(byteLength);
-            var lastOffset = 0;
+            let  tmp = new Uint16Array(byteLength);
+            let  lastOffset = 0;
             buffers.forEach(function(buffer) {
                 // BYTES_PER_ELEMENT == 2 for Uint16Array
-                var reusableByteLength = buffer.byteLength;
+                let  reusableByteLength = buffer.byteLength;
                 if (reusableByteLength % 2 != 0) {
                     buffer = buffer.slice(0, reusableByteLength - 1)
                 }
@@ -38,7 +38,7 @@
                 lastOffset += reusableByteLength;
             });
 
-            var blob = new Blob([tmp.buffer], {
+            let  blob = new Blob([tmp.buffer], {
                 type: type
             });
 

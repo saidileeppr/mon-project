@@ -1,20 +1,17 @@
 let socket = io();
-var rec='';
-var arr='';
-var isHost=0;
-var canWrite=0;
-var roomDetail={members:[],host:"",write:"",tempHost:"",user:"",roomId:""};
-var langg=document.getElementById("langg");
-var audFile;
-var memList=document.getElementById("members");
-var cookieUsername;
-var cookieUserid;
+let isHost=0;
+let canWrite=0;
+let roomDetail={members:[],host:"",write:"",tempHost:"",user:"",roomId:""};
+let langg=document.getElementById("langg");
+let audFile;
+let memList=document.getElementById("members");
+let cookieUsername;
+let cookieUserid;
+let model;
+let monEditor;
 require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
 require(["vs/editor/editor.main"],function () {
-  model=monaco.editor.createModel(
-  "",
-  "python"
-);
+  model=monaco.editor.createModel("","python");
   monEditor = monaco.editor.create(document.getElementById('myInput'),{
       model,
       theme: "vs-dark"
@@ -76,13 +73,13 @@ require(["vs/editor/editor.main"],function () {
     });
     });
     let element = document.getElementById("reqWriteAccess");
-    let hidden = element.getAttribute("hidden");
+    //let hidden = element.getAttribute("hidden");
     element.setAttribute("hidden", "hidden");
   });
   socket.on("s2c_addUsers",function(userNames,userIds,hostId){
     cookieUsername=getCookie('userName');
     cookieUserid=getCookie('userId');
-      for (i=0;i<userNames.length;i++){
+      for (let i=0;i<userNames.length;i++){
         if(userIds[i]==hostId && userIds[i]!=cookieUserid){
           roomDetail.host=hostId;
           memList.innerHTML=memList.innerHTML.replace("<div>Members</div>","<div>Members</div>"+"<div id=\""+userIds[i]+"\">"+userNames[i]+" (Host)</div>");
@@ -130,7 +127,6 @@ require(["vs/editor/editor.main"],function () {
     });
     });
     let element = document.getElementById("reqWriteAccess");
-    let hidden = element.getAttribute("hidden");
     element.removeAttribute("hidden");
   });
   socket.on('s2c_askWrite',function (userId,userName) {
@@ -148,7 +144,7 @@ require(["vs/editor/editor.main"],function () {
   socket.on('s2c_prevData',function(socid,roomId){
     console.log('newUser into room:'+roomId);
     require(["vs/editor/editor.main"],function () {
-      var con=model.getValue();
+      let con=model.getValue();
       sendNewData(3,[[1,1,1,1]],[con],roomId,socid);
       });
     });
@@ -167,15 +163,14 @@ function sendData(op,ranges,texts,roomId) {
     socket.emit('c2s_message',op,ranges,texts,roomId,cookieUserid);
 }
 function generateId(len){
-  var ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-+=;:[]{}!@#$^*()`~';
-  var rtn = '';
-  for(var i=0;i<len;i++){
+  let ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let rtn = '';
+  for(let i=0;i<len;i++){
       rtn += ALPHABET.charAt(Math.floor(Math.random()*ALPHABET.length));
     }
   return rtn;
 }
 langg.onchange=function(){
-  canWrite1;
   require(["vs/editor/editor.main"],function () {
     monaco.editor.setModelLanguage(model,langg.value);
     console.log(langg.value);
@@ -183,7 +178,7 @@ langg.onchange=function(){
 };
 function changeName(){
   cookieUserid=getCookie('userId');
-  var pre_name=getCookie('userName');
+  let pre_name=getCookie('userName');
   cookieUsername=prompt("Your  name?");
   setCookie('userName',cookieUsername);
   socket.emit('c2s_reqRepName',pre_name,cookieUsername,cookieUserid,roomDetail.roomId);
@@ -195,11 +190,11 @@ function muteFun(id){
 }
 function getCookie(name) {
   // Split cookie string and get all individual name=value pairs in an array
-  var cookieArr = document.cookie.split(";");
+  let cookieArr = document.cookie.split(";");
   
   // Loop through the array elements
-  for(var i = 0; i < cookieArr.length; i++) {
-      var cookiePair = cookieArr[i].split("=");
+  for(const element of cookieArr) {
+      let cookiePair = element.split("=");
       
       /* Removing whitespace at the beginning of the cookie name
       and compare it with the given string */
@@ -215,8 +210,8 @@ function getCookie(name) {
 
 function setCookie(name, value) {
   // Encode value in order to escape semicolons, commas, and whitespace
-  var cookie = name + "=" + encodeURIComponent(value);
-  var daysToLive=1;
+  let cookie = name + "=" + encodeURIComponent(value);
+  let daysToLive=1;
       /* Sets the max-age attribute so that the cookie expires
       after the specified number of days */
       cookie += "; max-age=" + (daysToLive*24*60*60);
@@ -226,4 +221,11 @@ function reqWriteAccess(){
   cookieUsername=getCookie('userName');
   cookieUserid=getCookie('userId');
   socket.emit('c2s_reqTempWriteAccess',cookieUserid,roomDetail.roomId);
+}
+
+function execute(){
+  require(["vs/editor/editor.main"],function () {
+    let code=model.getValue();
+    console.log(code);
+    });
 }

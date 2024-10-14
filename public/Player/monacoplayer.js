@@ -43,7 +43,7 @@ document.getElementById('import').onclick = function() {
 aud.ontimeupdate = function(){
   let currTime=Math.floor(aud.currentTime);
       if(currTime!=lastsec && currTime<arrlen){  
-  if(currTime==lastsec+1){
+  if(currTime==lastsec+1 || aud.paused){
         load(currTime);
       }
     else{

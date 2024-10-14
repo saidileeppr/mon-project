@@ -1,16 +1,83 @@
 <!DOCTYPE html>
-    <head>
+<html>
+<head>
+  <title>JSON Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
 
-        <title>Project</title>
-    </head>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .file-upload {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #selectFiles {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    #import {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #import:hover {
+      background-color: #0069d9;
+    }
+
+    #myInput {
+      width: 80vw;
+      height: 400px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #audRec {
+      margin-top: 20px;
+      width: 80vw;
+    }
+  </style>
+</head>
 <body>
-<h3>Select your JSON file</h3>
-<input type="file" id="selectFiles" value="Import" /><br>
-<button id="import">Import</button><br>
-<div style="height:500px;width:1000px;" id="myInput" ></div>
-<audio controls controlsList="nodownload" style="width:100%" id="audRec"></audio>
-<script src="/monaco-editor/min/vs/loader.js"></script>
-<script src="/Player/monacoplayer.js"></script>
-<script src="/Player/monacoplayerupdate.js"></script>
+  <div class="container">
+    <h2>JSON Player</h2>
+    <div class="file-upload">
+      <input type="file" id="selectFiles" accept=".json">
+      <button id="import">Import JSON</button>
+    </div>
+    <div id="myInput"></div>
+    <audio controls controlsList="nodownload" id="audRec"></audio>
+  </div>
+
+  <script src="/monaco-editor/min/vs/loader.js"></script>
+  <script src="/Player/monacoplayer.js"></script>
+  <script src="/Player/monacoplayerupdate.js"></script>
 </body>
 </html>

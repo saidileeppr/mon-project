@@ -1,25 +1,89 @@
 <!DOCTYPE html>
-<head>  
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-  <title>Editor Room</title>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Code Editor</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+    }
+
+    #editorContainer {
+      width: 75%;
+      height: 100%;
+    }
+
+    #sidebar {
+      width: 25%;
+      background-color: #f4f4f4;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    label {
+      margin-bottom: 5px;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    #members {
+      margin-top: auto; /* Push members list to the bottom */
+    }
+  </style>
 </head>
 <body>
-  <p>welcome to the chat app</p>
-  <button onclick="Record()" value="Record" id="record">Record</button><br>
-  <button onclick="reqWriteAccess()" value="Request Write Access" id="reqWriteAccess">Request Write Access</button><br>
-  <button onclick="execute()" value="Execute" id="execute">Execute</button><br>
-  <label for="cars">Choose language:</label>
-  <select id="langg" name="langg">
-    <option value="c">C</option>
-    <option value="c++">C++</option>
-    <option value="java">Java</option>
-    <option value="python" selected>Python</option>
-  </select>
-  <div style="height:1000px;width:75%;color:blueviolet;" id="myInput" ></div>
-  <div style="position:absolute;top:5%;position:absolute;right:5%;" id="members"></div>
+
+  <div id="editorContainer">
+    <div id="myInput" style="height: 100%;"></div> 
+  </div>
+
+  <div id="sidebar">
+    <h2>Collaborative Editor</h2>
+    <button id="record">Record</button>
+    <button id="reqWriteAccess">Request Write Access</button>
+    <button id="execute">Execute</button>
+
+    <label for="langg">Choose Language:</label>
+    <select id="langg" name="langg">
+      <option value="c">C</option>
+      <option value="c++">C++</option>
+      <option value="java">Java</option>
+      <option value="python" selected>Python</option>
+    </select>
+
+    <h3>Connected Users:</h3>
+    <ul id="members"></ul>
+  </div>
+ 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/monaco-editor/min/vs/loader.js"></script>
-  <script src="/Meet_room/monacoeditor.js"></script>
+  <script src="/Meet_room/monacoeditor.js"></script> 
   <script src="/Meet_room/monaco_audio.js"></script>
   <script src="/Meet_room/monacorecJSON.js"></script>
   <script src="/Meet_room/monaco_listener.js"></script>

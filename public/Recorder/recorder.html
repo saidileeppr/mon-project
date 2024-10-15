@@ -7,10 +7,11 @@
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       display: flex;
       height: 100vh;
+      background-color: #f8f8f8;
     }
 
     #editorContainer {
@@ -20,38 +21,51 @@
 
     #sidebar {
       width: 25%;
-      background-color: #f4f4f4;
+      background-color: #fff;
       padding: 20px;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
     }
 
     button {
-      background-color: #4CAF50;
+      background-color: #28a745;
       color: white;
       padding: 10px 15px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       margin-bottom: 10px;
+      transition: background-color 0.3s;
     }
 
     button:hover {
-      background-color: #45a049;
+      background-color: #218838;
     }
 
     label {
       margin-bottom: 5px;
+      color: #333;
     }
 
     select {
       width: 100%;
       padding: 8px;
-      border: 1px solid #ddd;
+      border: 1px solid #ced4da;
       border-radius: 4px;
       margin-bottom: 10px;
     }
 
+    #audioInputSelect {
+      margin-bottom: 20px;
+    }
+
+    /* Style for member list (if needed) */
     #members {
       margin-top: auto;
     }
@@ -59,7 +73,7 @@
     #members > div {
       margin-bottom: 5px;
       padding: 8px;
-      background-color: #e9e9e9;
+      background-color: #e9ecef;
       border-radius: 4px;
     }
   </style>
@@ -72,6 +86,7 @@
 
   <div id="sidebar">
     <h2>Code Recorder</h2>
+
     <button id="record">Start Recording</button>
 
     <label for="langg">Choose Language:</label>
@@ -82,15 +97,15 @@
       <option value="python" selected>Python</option>
     </select>
 
-    <h3>Recorded Users:</h3>
-    <div id="members">
-      <div>Me</div> 
-    </div>
+    <label for="audioInputSelect">Select Input Device:</label>
+    <select id="audioInputSelect"></select>
+
   </div>
+
   <script src="/monaco-editor/min/vs/loader.js"></script>
   <script src="/Meet_room/monacorecJSON.js"></script>
   <script src="/Recorder/monaco_receditor.js"></script>
   <script src="/Recorder/monaco_reclistener.js"></script>
-
+  <script src="/Recorder/RecorderAudio.js"></script>
 </body>
 </html>

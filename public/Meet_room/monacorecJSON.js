@@ -31,7 +31,8 @@ mediaRecorder.onstop = function(e) {
     arriter=0;
     fileCon=JSON.stringify(fileCon);
     console.log(fileCon);
-    download(fileCon,'abcd.json','text/json')
+    let filename = prompt("Enter the filename you the save(Excluding Extension, e.g., 'MyFile')","MyFile");
+    download(fileCon,filename+'.json','text/json')
     }
   };
 });

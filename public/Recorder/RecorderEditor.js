@@ -1,7 +1,14 @@
-let  langg=document.getElementById("langg");
-let  audFile;
+let  languageSelector=document.getElementById("languageSelector");
 let model;
 let monEditor;
+//Populate Languages for Editor
+let languageList=['python','java','c']
+languageList.forEach(lang => {
+  const option = document.createElement('option');
+  option.value = lang;
+  option.text = lang;
+  languageSelector.appendChild(option);
+});
 require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
 require(["vs/editor/editor.main"],function () {
   model=monaco.editor.createModel(
@@ -19,10 +26,9 @@ require(["vs/editor/editor.main"],function () {
 });
 });
 
-langg.onchange=function(){
+languageSelector.onchange=function(){
   require(["vs/editor/editor.main"],function () {
-    monaco.editor.setModelLanguage(model,langg.value);
-    console.log(langg.value);
+    monaco.editor.setModelLanguage(model,languageSelector.value);
   });
 };
 

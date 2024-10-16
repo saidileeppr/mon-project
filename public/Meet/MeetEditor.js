@@ -2,13 +2,21 @@ let socket = io();
 let isHost=0;
 let canWrite=0;
 let roomDetail={members:[],host:"",write:"",tempHost:"",user:"",roomId:""};
-let langg=document.getElementById("langg");
-let audFile;
-let memList=document.getElementById("members");
+const languageSelector=document.getElementById("languageSelector");
+const memList=document.getElementById("members");
 let cookieUsername;
 let cookieUserid;
 let model;
 let monEditor;
+//Populate Languages for Editor
+let languageList=['python','java','c']
+languageList.forEach(lang => {
+  const option = document.createElement('option');
+  option.value = lang;
+  option.text = lang;
+  languageSelector.appendChild(option);
+});
+
 require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
 require(["vs/editor/editor.main"],function () {
   model=monaco.editor.createModel("","python");
@@ -170,10 +178,9 @@ function generateId(len){
     }
   return rtn;
 }
-langg.onchange=function(){
+languageSelector.onchange=function(){
   require(["vs/editor/editor.main"],function () {
-    monaco.editor.setModelLanguage(model,langg.value);
-    console.log(langg.value);
+    monaco.editor.setModelLanguage(model,languageSelector.value);
   });
 };
 function changeName(){
@@ -217,13 +224,14 @@ function setCookie(name, value) {
       cookie += "; max-age=" + (daysToLive*24*60*60);
       document.cookie = cookie;
 }
-function reqWriteAccess(){
+
+document.getElementById('reqWriteAccess').onclick=function(){
   cookieUsername=getCookie('userName');
   cookieUserid=getCookie('userId');
   socket.emit('c2s_reqTempWriteAccess',cookieUserid,roomDetail.roomId);
 }
-
-function execute(){
+//Future Implementation of Execute Button
+document.getElementById('execute').onclick=function(){
   require(["vs/editor/editor.main"],function () {
     let code=model.getValue();
     console.log(code);

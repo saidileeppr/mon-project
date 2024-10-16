@@ -87,14 +87,10 @@
   <div id="sidebar">
     <h2>Code Recorder</h2>
 
-    <button id="record">Start Recording</button>
+    <button id="record">Record</button>
 
-    <label for="langg">Choose Language:</label>
-    <select id="langg" name="langg">
-      <option value="c">C</option>
-      <option value="cpp">C++</option>
-      <option value="java">Java</option>
-      <option value="python" selected>Python</option>
+    <label for="languageSelector">Choose Language:</label>
+    <select id="languageSelector" name="languageSelector">
     </select>
 
     <label for="audioInputSelect">Select Input Device:</label>
@@ -103,9 +99,9 @@
   </div>
 
   <script src="/monaco-editor/min/vs/loader.js"></script>
-  <script src="/Meet_room/monacorecJSON.js"></script>
-  <script src="/Recorder/monaco_receditor.js"></script>
-  <script src="/Recorder/monaco_reclistener.js"></script>
   <script src="/Recorder/RecorderAudio.js"></script>
+  <script src="/Recorder/Recorder.js"></script>
+  <script src="/Recorder/RecorderEditor.js"></script>
+  <script src="/Recorder/RecorderEditorListener.js"></script>
 </body>
 </html>

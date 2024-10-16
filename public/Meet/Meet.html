@@ -89,13 +89,8 @@
     <button id="reqWriteAccess">Request Write Access</button>
     <button id="execute">Execute</button>
 
-    <label for="langg">Choose Language:</label>
-    <select id="langg" name="langg">
-      <option value="c">C</option>
-      <option value="c++">C++</option>
-      <option value="java">Java</option>
-      <option value="python" selected>Python</option>
-    </select>
+    <label for="languageSelector">Choose Language:</label>
+    <select id="languageSelector" name="languageSelector"></select>
 
     <h3>Connected Users:</h3>
     <ul id="members"></ul>
@@ -107,10 +102,10 @@
   
   <script src="/socket.io/socket.io.js"></script>
   <script src="/monaco-editor/min/vs/loader.js"></script>
-  <script src="/Meet_room/monacoeditor.js"></script> 
-  <script src="/Meet_room/monaco_audio.js"></script>
-  <script src="/Meet_room/monacorecJSON.js"></script>
-  <script src="/Meet_room/monaco_listener.js"></script>
-  <script src="/Meet_room/monacoupdate.js"></script>
+  <script src="/Meet/MeetEditor.js"></script> 
+  <script src="/Meet/MeetAudio.js"></script>
+  <script src="/Meet/MeetRecorder.js"></script>
+  <script src="/Meet/MeetEditorListener.js"></script>
+  <script src="/Meet/MeetEditorUpdater.js"></script>
 </body>
 </html>

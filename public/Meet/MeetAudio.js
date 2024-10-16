@@ -1,7 +1,5 @@
 let audioInputSelect = document.querySelector('#audioInput');
 let audioOutputSelect = document.querySelector('#audioOutput');
-let mediaRecorder;
-let audioStream;
 
 // Function to get available audio devices
 async function getAudioDevices() {
@@ -40,8 +38,8 @@ async function startRecording() {
   };
 
   try {
-    audioStream = await navigator.mediaDevices.getUserMedia(constraints);
-    mediaRecorder = new MediaRecorder(audioStream);
+    let audioStream = await navigator.mediaDevices.getUserMedia(constraints);
+    let mediaRecorder = new MediaRecorder(audioStream);
     mediaRecorder.onstart = function(e) {
       this.chunks = [];
     };
@@ -92,6 +90,7 @@ audioInputSelect.addEventListener('change', startRecording); // Restart recordin
 audioOutputSelect.addEventListener('change', () => { 
   // You might want to handle output device change differently
   // e.g., stop current audio and play the next one on the new device 
+  
 });
 
 // Get devices and start recording initially
